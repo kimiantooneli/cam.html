@@ -1,0 +1,1393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FindYourCam - Vintage & Modern Digicams</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- RESET & BASIC STYLES --- */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #1e293b;
+            padding-bottom: 70px; /* Space for Bottom Nav */
+            max-width: 480px; /* Mobile View limit */
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; border: none; outline: none; font-family: inherit; }
+        input, select { font-family: inherit; outline: none; }
+
+        /* --- TOAST NOTIFICATION --- */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: #0f172a;
+            color: #ffffff;
+            padding: 12px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 9999;
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* --- HEADER --- */
+        header {
+            position: sticky;
+            top: 0;
+            background: #ffffff;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .brand-logo {
+            font-family: 'Syne', sans-serif;
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+        }
+
+        .header-action {
+            position: relative;
+            font-size: 20px;
+        }
+
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            background: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #f1f5f9;
+            z-index: 100;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: #0f172a;
+        }
+
+        .nav-item .icon {
+            font-size: 18px;
+            margin-bottom: 2px;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -4px;
+            right: 12px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* --- VIEWS CONTAINER --- */
+        .view { display: none; padding: 16px; }
+        .view.active { display: block; }
+
+        /* --- ONBOARDING & AUTH OVERLAY --- */
+        #auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 480px;
+            height: 100vh;
+            background: #ffffff;
+            z-index: 1000;
+            padding: 30px 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .auth-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 14px;
+            background: #f8fafc;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #0f172a;
+            background: #ffffff;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 14px;
+            border-radius: 12px;
+            margin-top: 10px;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+        }
+
+        .auth-switch {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        .auth-switch span {
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        /* --- INTRO BANNER --- */
+        .intro-banner {
+            background: #0f172a;
+            color: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+        .intro-banner h2 {
+            font-family: 'Syne', sans-serif;
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+        .intro-banner p {
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        /* --- SEARCH & TABS --- */
+        .search-box {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px 12px 40px;
+            border-radius: 25px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            font-size: 13px;
+        }
+
+        .search-box .icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
+        }
+        .tabs::-webkit-scrollbar { display: none; }
+
+        .tab-btn {
+            padding: 8px 16px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            color: #64748b;
+        }
+
+        .tab-btn.active {
+            background: #0f172a;
+            color: #ffffff;
+            border-color: #0f172a;
+        }
+
+        /* --- PRODUCT GRID --- */
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 10px;
+            border: 1px solid #f1f5f9;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .badge-discount {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 3px 6px;
+            border-radius: 6px;
+            z-index: 2;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            background: #f1f5f9;
+        }
+
+        .product-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .price-container {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .price-current {
+            font-size: 13px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .price-old {
+            font-size: 11px;
+            color: #94a3b8;
+            text-decoration: line-through;
+        }
+
+        .rating {
+            font-size: 11px;
+            color: #f59e0b;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .btn-buy {
+            width: 100%;
+            padding: 8px;
+            background: #f1f5f9;
+            color: #0f172a;
+            font-size: 11px;
+            font-weight: 700;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-buy:active {
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+        /* --- PRODUCT DETAIL VIEW --- */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 16px;
+            cursor: pointer;
+        }
+
+        .detail-img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 16px;
+            margin-bottom: 16px;
+            background: #e2e8f0;
+        }
+
+        .detail-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 6px;
+        }
+
+        .detail-price-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .detail-price {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .detail-desc {
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .action-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 24px;
+        }
+
+        .btn-cart {
+            flex: 1;
+            padding: 12px;
+            background: #ffffff;
+            border: 1.5px solid #0f172a;
+            color: #0f172a;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        .btn-direct-buy {
+            flex: 1;
+            padding: 12px;
+            background: #0f172a;
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        /* REVIEWS SECTION */
+        .reviews-container {
+            border-top: 1px solid #e2e8f0;
+            padding-top: 16px;
+        }
+
+        .review-card {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 10px;
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #cbd5e1;
+        }
+
+        .user-info .username {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .user-info .stars {
+            font-size: 10px;
+            color: #f59e0b;
+        }
+
+        .review-text {
+            font-size: 12px;
+            color: #475569;
+            line-height: 1.4;
+        }
+
+        /* --- CART VIEW --- */
+        .cart-item {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .cart-info { flex: 1; }
+        .cart-info h4 { font-size: 13px; font-weight: 700; }
+        .cart-info p { font-size: 12px; color: #64748b; font-weight: 700; }
+
+        .cart-summary {
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            margin-top: 20px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #64748b;
+        }
+
+        .summary-row.total {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            border-top: 1px dashed #e2e8f0;
+            padding-top: 8px;
+        }
+
+        /* --- PROFILE VIEW --- */
+        .profile-card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid #f1f5f9;
+            margin-bottom: 20px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 12px auto;
+            background: #e2e8f0;
+        }
+
+        .profile-name { font-size: 16px; font-weight: 800; color: #0f172a; }
+        .profile-email { font-size: 12px; color: #64748b; margin-bottom: 8px; }
+
+        .badge-vip {
+            display: inline-block;
+            background: #fef3c7;
+            color: #d97706;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .order-status-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            margin-bottom: 20px;
+        }
+
+        .btn-logout {
+            width: 100%;
+            padding: 12px;
+            background: #fef2f2;
+            color: #ef4444;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 10px;
+        }
+
+        /* --- ADMIN DASHBOARD --- */
+        .admin-nav {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid #f1f5f9;
+            text-align: center;
+        }
+
+        .stat-card h5 { font-size: 10px; color: #64748b; text-transform: uppercase; }
+        .stat-card p { font-size: 16px; font-weight: 800; color: #0f172a; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            font-size: 11px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th { background: #f8fafc; font-weight: 700; }
+    </style>
+</head>
+<body>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast"><span>✨</span> <span id="toast-text">Message</span></div>
+
+    <!-- HEADER -->
+    <header>
+        <div class="brand-logo">FindYourCam.</div>
+        <div class="header-action">📸</div>
+    </header>
+
+    <!-- ONBOARDING & AUTH OVERLAY -->
+    <div id="auth-overlay">
+        <!-- STEP 1: WELCOME -->
+        <div id="auth-step-1">
+            <h1 class="auth-title">Welcome To Our Home,<br>FindYourCam.</h1>
+            <p class="auth-subtitle">Discover vintage digitial cameras curated just for you.</p>
+            <button class="btn-primary" onclick="goToStep(2)">Get Started →</button>
+        </div>
+
+        <!-- STEP 2: LOGIN / REGISTER -->
+        <div id="auth-step-2" style="display: none;">
+            <h1 class="auth-title" id="auth-form-title">Login Account</h1>
+            <p class="auth-subtitle" id="auth-form-sub">Sign in to start exploring catalog.</p>
+
+            <form id="login-form" onsubmit="handleAuth(event)">
+                <div class="form-group" id="email-group" style="display: none;">
+                    <label>Email Address</label>
+                    <input type="email" id="auth-email" class="form-control" placeholder="example@mail.com">
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="auth-username" class="form-control" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="auth-password" class="form-control" placeholder="Enter password" required>
+                </div>
+                <button type="submit" class="btn-primary" id="auth-submit-btn">Login</button>
+            </form>
+
+            <div class="auth-switch">
+                <span id="auth-toggle-text" onclick="toggleAuthMode()">Belum buat akun? Mari buat.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 1: HOME (CUSTOMER) -->
+    <div id="view-home" class="view">
+        <div class="intro-banner">
+            <h2>Welcome, happy shopping, Camers! 📸</h2>
+            <p>Find your aesthetic digicam below.</p>
+        </div>
+
+        <div class="search-box">
+            <span class="icon">🔍</span>
+            <input type="text" placeholder="Search digicam brand or series..." onkeyup="filterProducts(this.value)">
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(this, 'all')">Home</button>
+            <button class="tab-btn" onclick="switchTab(this, 'discount')">Digicam Discount</button>
+            <button class="tab-btn" onclick="switchTab(this, 'ready')">Cams ready to buy</button>
+            <button class="tab-btn" onclick="switchTab(this, 'promo')">Promo</button>
+        </div>
+
+        <h3 class="section-title">Rekomendasi Untuk Digicam</h3>
+        <div class="product-grid" id="product-list">
+            <!-- Product Cards Rendered JS -->
+        </div>
+    </div>
+
+    <!-- VIEW 2: PRODUCT DETAIL -->
+    <div id="view-detail" class="view">
+        <div class="back-btn" onclick="showView('home')">← Back to Catalog</div>
+        <img id="detail-img" src="" class="detail-img" alt="Product">
+        <h2 id="detail-title" class="detail-title"></h2>
+        <div class="detail-price-box">
+            <span id="detail-price" class="detail-price"></span>
+            <span id="detail-price-old" class="price-old"></span>
+        </div>
+        <p id="detail-desc" class="detail-desc"></p>
+
+        <div class="action-group">
+            <button class="btn-cart" onclick="addToCartCurrentDetail()">+ Add To Cart</button>
+            <button class="btn-direct-buy" onclick="buyNowCurrentDetail()">🛒 Buy Now</button>
+        </div>
+
+        <div class="reviews-container">
+            <h3 class="section-title">Customer Reviews</h3>
+            <div id="reviews-list">
+                <!-- Reviews rendered via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- VIEW 3: CART -->
+    <div id="view-cart" class="view">
+        <h3 class="section-title">Shopping Cart</h3>
+        <div id="cart-items-container">
+            <!-- Cart items JS -->
+        </div>
+
+        <div class="cart-summary">
+            <div class="summary-row">
+                <span>Total Items</span>
+                <span id="summary-count">0 items</span>
+            </div>
+            <div class="summary-row total">
+                <span>Subtotal</span>
+                <span id="summary-total">$0</span>
+            </div>
+            <button class="btn-primary" style="margin-top: 15px;" onclick="checkout()">Bayar Sekarang</button>
+        </div>
+    </div>
+
+    <!-- VIEW 4: PROFILE -->
+    <div id="view-profile" class="view">
+        <div class="profile-card">
+            <!-- 
+                ARAHAN FOTO AVATAR PROFIL USER CUSTOMER:
+                Ganti src di bawah ini dengan foto profil milikmu. Contoh: src="avatar-customer.jpg" 
+            -->
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="profile-avatar" alt="Profile">
+            <h3 class="profile-name" id="profile-username-display">customer</h3>
+            <p class="profile-email" id="profile-email-display">customeremail.com</p>
+            <span class="badge-vip" id="profile-badge">VIP Member</span>
+        </div>
+
+        <h3 class="section-title">Pesanan Saya</h3>
+        <div class="order-status-grid">
+            <div>🕒<br>Belum Bayar</div>
+            <div>📦<br>Dikemas</div>
+            <div>🚚<br>Dikirim</div>
+            <div>⭐<br>Beri Penilaian</div>
+        </div>
+
+        <button class="btn-logout" onclick="logout()">Keluar Account</button>
+    </div>
+
+    <!-- VIEW 5: ADMIN DASHBOARD -->
+    <div id="view-admin" class="view">
+        <h3 class="section-title">Admin Management</h3>
+        
+        <div class="admin-stats">
+            <div class="stat-card">
+                <h5>Total Barang</h5>
+                <p id="stat-total-items">0</p>
+            </div>
+            <div class="stat-card">
+                <h5>Total Stok</h5>
+                <p id="stat-total-stock">0</p>
+            </div>
+            <div class="stat-card">
+                <h5>Pesanan</h5>
+                <p id="stat-total-orders">0</p>
+            </div>
+        </div>
+
+        <div class="section-title">Input Barang Baru</div>
+        <form id="admin-add-form" onsubmit="handleAddProduct(event)" style="background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 20px;">
+            <div class="form-group"><input type="text" id="adm-name" class="form-control" placeholder="Nama Camera" required></div>
+            <div class="form-group"><input type="number" id="adm-price" class="form-control" placeholder="Harga ($)" required></div>
+            <div class="form-group"><input type="number" id="adm-stock" class="form-control" placeholder="Stok" required></div>
+            <div class="form-group"><input type="text" id="adm-cat" class="form-control" placeholder="Kategori" required></div>
+            <button type="submit" class="btn-primary">Tambah Barang</button>
+        </form>
+
+        <div class="section-title">Data Barang</div>
+        <table id="admin-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Harga</th>
+                    <th>Stok</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <div class="bottom-nav" id="bottom-nav">
+        <div class="nav-item active" onclick="showView('home')">
+            <span class="icon">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" onclick="showView('cart')">
+            <span class="icon">🛒</span>
+            <span>Keranjang</span>
+            <span class="cart-badge" id="cart-badge-count">0</span>
+        </div>
+        <div class="nav-item" onclick="showView('profile')">
+            <span class="icon">👤</span>
+            <span>Akun</span>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* --- 1. DATA INITIALIZATION (LOCALSTORAGE) --- */
+        const defaultProducts = [
+            {
+                id: 1,
+                name: "Canon IXY Digital 930 IS",
+                price: 185,
+                oldPrice: 220,
+                discount: "15% OFF",
+                rating: "4.9",
+                category: "ready",
+                img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500",
+                desc: "Classic compact digicam with rich color science. Perfect for vintage aesthetic film-like photography.",
+                reviews: [
+                    {
+                        username: "cherries",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 1 disini -> avatar1.jpg */
+                        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", 
+                        text: "such a beautiful cam... aaa I didn't expect the digicam output to be this good! retro vibe totally nailed! ✨"
+                    },
+                    {
+                        username: "Arven Thoories",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 2 disini -> avatar2.jpg */
+                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", 
+                        text: "I think all the Digicams here are great. High technical fidelity and crisp output for a vintage model. Much obliged."
+                    },
+                    {
+                        username: "cacichu",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 3 disini -> avatar3.jpg */
+                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", 
+                        text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! 💖"
+                    }
+                ]
+            },
+            {
+                id: 2,
+                name: "Sony Cyber-shot DSC-W350",
+                price: 140,
+                oldPrice: 175,
+                discount: "20% OFF",
+                rating: "4.8",
+                category: "discount",
+                img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500",
+                desc: "Ultra-slim CCD sensor digicam known for soft skin tones and iconic early 2000s flash photo aesthetics.",
+                reviews: [
+                    {
+                        username: "Julian_Vibes",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 4 disini -> avatar4.jpg */
+                        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+                        text: "Clean sharpness, surprisingly deep color rendering. A solid addition to my kit."
+                    },
+                    {
+                        username: "SoftieGoth",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 5 disini -> avatar5.jpg */
+                        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
+                        text: "The night flash pictures look so moody and cool!! Love it sm <3"
+                    },
+                    {
+                        username: "Kenzo_R",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 6 disini -> avatar6.jpg */
+                        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100",
+                        text: "Fast delivery, camera arrived in pristine mint condition. Operates smoothly."
+                    }
+                ]
+            },
+            {
+                id: 3,
+                name: "Fujifilm FinePix Z33WP Pink",
+                price: 165,
+                oldPrice: 190,
+                discount: "12% OFF",
+                rating: "5.0",
+                category: "promo",
+                img: "https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=500",
+                desc: "Vibrant pink waterproof digicam. Extremely rare aesthetic body with punchy contrast tones.",
+                reviews: [
+                    {
+                        username: "cacichu",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 3 */
+                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                        text: "PINK PINK PINK! 🌸 Absolute perfection! I'm screaming because of how adorable this camera is!"
+                    },
+                    {
+                        username: "cherries",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 1 */
+                        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+                        text: "The tone is naturally warm and dreamy! No editing needed at all!"
+                    },
+                    {
+                        username: "Arven Thoories",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 2 */
+                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+                        text: "Surprisingly rugged build despite the bright aesthetic color scheme. Excellent shutter response."
+                    }
+                ]
+            },
+            {
+                id: 4,
+                name: "Nikon Coolpix S210",
+                price: 130,
+                oldPrice: 150,
+                discount: "10% OFF",
+                rating: "4.7",
+                category: "ready",
+                img: "https://images.unsplash.com/photo-1510127034890-ba27508e9f1c?w=500",
+                desc: "Sleek metallic finish digicam with quick focus and nostalgic low-light noise grain.",
+                reviews: [
+                    {
+                        username: "Arven Thoories",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 2 */
+                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+                        text: "Reliable ergonomics. Compact enough for daily pocket carry without sacrificing optical clarity."
+                    },
+                    {
+                        username: "Julian_Vibes",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 4 */
+                        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+                        text: "Great vintage look. Really good value for money."
+                    },
+                    {
+                        username: "SoftieGoth",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 5 */
+                        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
+                        text: "Gives that iconic Y2K celebrity photo look! obsessed!"
+                    }
+                ]
+            },
+            {
+                id: 5,
+                name: "Olympus Camedia FE-230",
+                price: 110,
+                oldPrice: 140,
+                discount: "25% OFF",
+                rating: "4.6",
+                category: "discount",
+                img: "https://images.unsplash.com/photo-1527011046414-4781f1f94f8c?w=500",
+                desc: "Lightweight vintage CCD camera with crisp lens for warm outdoor portrait shots.",
+                reviews: [
+                    {
+                        username: "cherries",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 1 */
+                        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+                        text: "Took this to concert and results were immaculate! 1000/10!"
+                    },
+                    {
+                        username: "Kenzo_R",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 6 */
+                        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100",
+                        text: "Solid construction, dynamic range is remarkable for its era."
+                    },
+                    {
+                        username: "cacichu",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 3 */
+                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                        text: "Super cute and easy to use! Buttons are smooth!"
+                    }
+                ]
+            },
+            {
+                id: 6,
+                name: "Panasonic Lumix DMC-FX37",
+                price: 155,
+                oldPrice: 180,
+                discount: "15% OFF",
+                rating: "4.9",
+                category: "promo",
+                img: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=500",
+                desc: "Leica optics lens combined with vintage Lumix color rendering. Premium feel.",
+                reviews: [
+                    {
+                        username: "Julian_Vibes",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 4 */
+                        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+                        text: "The Leica optics truly make a difference in edge-to-edge sharpness."
+                    },
+                    {
+                        username: "Arven Thoories",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 2 */
+                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+                        text: "Impressed by the dynamic range and compact physical footprint."
+                    },
+                    {
+                        username: "SoftieGoth",
+                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 5 */
+                        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
+                        text: "Aesthetic master! Flash photography turns out so pretty!"
+                    }
+                ]
+            }
+        ];
+
+        // Init LocalStorage Data
+        if (!localStorage.getItem('barang')) {
+            localStorage.setItem('barang', JSON.stringify(defaultProducts));
+        }
+        if (!localStorage.getItem('FindYourCamCart')) {
+            localStorage.setItem('FindYourCamCart', JSON.stringify([]));
+        }
+
+        let currentDetailProduct = null;
+        let isRegisteringMode = false;
+
+        /* --- 2. AUTHENTICATION & ONBOARDING --- */
+        function goToStep(step) {
+            if(step === 2) {
+                document.getElementById('auth-step-1').style.display = 'none';
+                document.getElementById('auth-step-2').style.display = 'block';
+            }
+        }
+
+        function toggleAuthMode() {
+            isRegisteringMode = !isRegisteringMode;
+            const title = document.getElementById('auth-form-title');
+            const sub = document.getElementById('auth-form-sub');
+            const emailGrp = document.getElementById('email-group');
+            const toggleText = document.getElementById('auth-toggle-text');
+            const btn = document.getElementById('auth-submit-btn');
+
+            if(isRegisteringMode) {
+                title.innerText = "Mari Buat Akun";
+                sub.innerText = "Register to start shopping Digicams";
+                emailGrp.style.display = "block";
+                btn.innerText = "Daftar Akun";
+                toggleText.innerText = "Sudah punya akun? Login.";
+            } else {
+                title.innerText = "Login Account";
+                sub.innerText = "Sign in to start exploring catalog";
+                emailGrp.style.display = "none";
+                btn.innerText = "Login";
+                toggleText.innerText = "Belum buat akun? Mari buat.";
+            }
+        }
+
+        function handleAuth(e) {
+            e.preventDefault();
+            const u = document.getElementById('auth-username').value.trim();
+            const p = document.getElementById('auth-password').value.trim();
+            const email = document.getElementById('auth-email').value.trim() || u + "@mail.com";
+
+            if (!u || !p) return;
+
+            if(isRegisteringMode) {
+                // Save new customer account
+                const userObj = { username: u, email: email, role: 'customer' };
+                localStorage.setItem('CamUser', JSON.stringify(userObj));
+                showToast("Akun Berhasil Dibuat!");
+                enterApp(userObj);
+            } else {
+                // Default customer check
+                if(u === "customer" && p === "123") {
+                    const userObj = { username: "customer", email: "customeremail.com", role: "customer" };
+                    localStorage.setItem('CamUser', JSON.stringify(userObj));
+                    showToast("Login Berhasil!");
+                    enterApp(userObj);
+                } 
+                // Any other username input acts as Custom Admin / User depending on password logic requested
+                else {
+                    // Check if Admin or generic customer login
+                    const role = (p === "admin123" || u.toLowerCase() === "eve") ? "admin" : "customer";
+                    const userObj = { username: u, email: email, role: role };
+                    localStorage.setItem('CamUser', JSON.stringify(userObj));
+                    showToast("Welcome " + u + "!");
+                    enterApp(userObj);
+                }
+            }
+        }
+
+        function enterApp(user) {
+            document.getElementById('auth-overlay').style.display = 'none';
+            if(user.role === 'admin') {
+                document.getElementById('bottom-nav').style.display = 'none';
+                showView('admin');
+                renderAdminView();
+            } else {
+                document.getElementById('bottom-nav').style.display = 'flex';
+                document.getElementById('profile-username-display').innerText = user.username;
+                document.getElementById('profile-email-display').innerText = user.email;
+                showView('home');
+            }
+            updateCartBadge();
+            renderProducts();
+        }
+
+        function logout() {
+            localStorage.removeItem('CamUser');
+            document.getElementById('auth-overlay').style.display = 'flex';
+            document.getElementById('auth-step-1').style.display = 'block';
+            document.getElementById('auth-step-2').style.display = 'none';
+            showToast("Berhasil Keluar");
+        }
+
+        /* --- 3. NAVIGATION & UI VIEWS --- */
+        function showView(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+            const targetView = document.getElementById(`view-${viewName}`);
+            if(targetView) targetView.classList.add('active');
+
+            // Bottom Nav Active styling
+            if(viewName === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
+            if(viewName === 'cart') {
+                document.querySelectorAll('.nav-item')[1].classList.add('active');
+                renderCart();
+            }
+            if(viewName === 'profile') document.querySelectorAll('.nav-item')[2].classList.add('active');
+            
+            window.scrollTo(0,0);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 2500);
+        }
+
+        /* --- 4. CATALOG & PRODUCTS --- */
+        function renderProducts(filterCategory = 'all', searchQuery = '') {
+            const products = JSON.parse(localStorage.getItem('barang')) || [];
+            const container = document.getElementById('product-list');
+            container.innerHTML = '';
+
+            let filtered = products;
+            if(filterCategory !== 'all') {
+                filtered = filtered.filter(p => p.category === filterCategory);
+            }
+            if(searchQuery) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
+            }
+
+            filtered.forEach(p => {
+                container.innerHTML += `
+                    <div class="product-card">
+                        <span class="badge-discount">${p.discount}</span>
+                        <img src="${p.img}" class="product-img" onclick="openDetail(${p.id})">
+                        <div class="product-name" onclick="openDetail(${p.id})">${p.name}</div>
+                        <div class="price-container">
+                            <span class="price-current">$${p.price}</span>
+                            <span class="price-old">$${p.oldPrice}</span>
+                        </div>
+                        <div class="rating">★ ${p.rating}</div>
+                        <button class="btn-buy" onclick="addToCart(${p.id})">🛒 Beli Sekarang</button>
+                    </div>
+                `;
+            });
+        }
+
+        function switchTab(btn, cat) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProducts(cat);
+        }
+
+        function filterProducts(q) {
+            renderProducts('all', q);
+        }
+
+        function openDetail(id) {
+            const products = JSON.parse(localStorage.getItem('barang')) || [];
+            currentDetailProduct = products.find(p => p.id === id);
+            if(!currentDetailProduct) return;
+
+            document.getElementById('detail-img').src = currentDetailProduct.img;
+            document.getElementById('detail-title').innerText = currentDetailProduct.name;
+            document.getElementById('detail-price').innerText = `$${currentDetailProduct.price}`;
+            document.getElementById('detail-price-old').innerText = `$${currentDetailProduct.oldPrice}`;
+            document.getElementById('detail-desc').innerText = currentDetailProduct.desc;
+
+            // Render Reviews
+            const revContainer = document.getElementById('reviews-list');
+            revContainer.innerHTML = '';
+            currentDetailProduct.reviews.forEach(r => {
+                revContainer.innerHTML += `
+                    <div class="review-card">
+                        <div class="review-header">
+                            <img src="${r.avatar}" class="avatar">
+                            <div class="user-info">
+                                <div class="username">${r.username}</div>
+                                <div class="stars">★★★★★</div>
+                            </div>
+                        </div>
+                        <div class="review-text">${r.text}</div>
+                    </div>
+                `;
+            });
+
+            showView('detail');
+        }
+
+        /* --- 5. CART & CHECKOUT --- */
+        function addToCart(id) {
+            const products = JSON.parse(localStorage.getItem('barang')) || [];
+            const item = products.find(p => p.id === id);
+            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
+
+            cart.push(item);
+            localStorage.setItem('FindYourCamCart', JSON.stringify(cart));
+            updateCartBadge();
+            showToast("Ditambahkan ke Keranjang!");
+        }
+
+        function addToCartCurrentDetail() {
+            if(currentDetailProduct) addToCart(currentDetailProduct.id);
+        }
+
+        function buyNowCurrentDetail() {
+            if(currentDetailProduct) {
+                addToCart(currentDetailProduct.id);
+                showView('cart');
+            }
+        }
+
+        function updateCartBadge() {
+            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
+            document.getElementById('cart-badge-count').innerText = cart.length;
+        }
+
+        function renderCart() {
+            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+
+            if(cart.length === 0) {
+                container.innerHTML = `<p style="text-align:center; color:#94a3b8; margin: 30px 0;">Keranjang kamu kosong.</p>`;
+                document.getElementById('summary-count').innerText = '0 items';
+                document.getElementById('summary-total').innerText = '$0';
+                return;
+            }
+
+            let subtotal = 0;
+            cart.forEach((item, idx) => {
+                subtotal += item.price;
+                container.innerHTML += `
+                    <div class="cart-item">
+                        <img src="${item.img}">
+                        <div class="cart-info">
+                            <h4>${item.name}</h4>
+                            <p>$${item.price}</p>
+                        </div>
+                        <button onclick="removeFromCart(${idx})" style="background:none; color:#ef4444; font-weight:bold;">✕</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById('summary-count').innerText = `${cart.length} items`;
+            document.getElementById('summary-total').innerText = `$${subtotal}`;
+        }
+
+        function removeFromCart(index) {
+            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
+            cart.splice(index, 1);
+            localStorage.setItem('FindYourCamCart', JSON.stringify(cart));
+            renderCart();
+            updateCartBadge();
+        }
+
+        function checkout() {
+            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
+            if(cart.length === 0) return showToast("Keranjang masih kosong!");
+
+            localStorage.setItem('FindYourCamCart', JSON.stringify([]));
+            updateCartBadge();
+            renderCart();
+            showToast("Checkout Berhasil!");
+        }
+
+        /* --- 6. ADMIN DASHBOARD LOGIC --- */
+        function renderAdminView() {
+            const products = JSON.parse(localStorage.getItem('barang')) || [];
+            document.getElementById('stat-total-items').innerText = products.length;
+            document.getElementById('stat-total-stock').innerText = products.length * 5; // Dummy Stock calculation
+            document.getElementById('stat-total-orders').innerText = "12";
+
+            const tbody = document.querySelector('#admin-table tbody');
+            tbody.innerHTML = '';
+            products.forEach(p => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>#${p.id}</td>
+                        <td>${p.name}</td>
+                        <td>$${p.price}</td>
+                        <td>In Stock</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function handleAddProduct(e) {
+            e.preventDefault();
+            const name = document.getElementById('adm-name').value;
+            const price = parseInt(document.getElementById('adm-price').value);
+            const cat = document.getElementById('adm-cat').value;
+
+            let products = JSON.parse(localStorage.getItem('barang')) || [];
+            const newProd = {
+                id: Date.now(),
+                name: name,
+                price: price,
+                oldPrice: price + 20,
+                discount: "NEW",
+                rating: "5.0",
+                category: cat || "ready",
+                img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500",
+                desc: "New camera added by admin.",
+                reviews: []
+            };
+
+            products.push(newProd);
+            localStorage.setItem('barang', JSON.stringify(products));
+            showToast("Barang Berhasil Ditambah!");
+            renderAdminView();
+            e.target.reset();
+        }
+
+        // Auto Login Check on Startup
+        window.onload = function() {
+            const savedUser = JSON.parse(localStorage.getItem('CamUser'));
+            if(savedUser) {
+                enterApp(savedUser);
+            }
+        };
+    </script>
+</body>
+</html>
