@@ -7,61 +7,70 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: #0f172a; color: #f8fafc; min-height: 100vh; padding-bottom: 60px; }
+        
+        /* LIGHT THEME (WHITE / LIGHT GRAY) */
+        body { background-color: #f8fafc; color: #0f172a; min-height: 100vh; padding-bottom: 60px; }
         button { cursor: pointer; border: none; outline: none; font-family: inherit; transition: all 0.2s; }
-        input, select, textarea { font-family: inherit; outline: none; border: none; }
+        input, select, textarea { font-family: inherit; outline: none; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; }
 
         /* HEADER & CONTAINER */
-        header { background: #1e293b; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; position: sticky; top: 0; z-index: 90; }
-        .brand { font-size: 18px; font-weight: 800; color: #38bdf8; }
+        header { background: #ffffff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 90; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .brand { font-size: 20px; font-weight: 800; color: #0284c7; }
         .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
 
         /* AUTH MODAL & OVERLAY */
-        .auth-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: #1e293b; width: 100%; max-width: 400px; border-radius: 16px; padding: 24px; border: 1px solid #334155; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5); }
-        .auth-tabs { display: flex; border-bottom: 1px solid #334155; margin-bottom: 20px; }
-        .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 14px; color: #94a3b8; cursor: pointer; border-bottom: 2px solid transparent; }
-        .auth-tab.active { color: #f8fafc; border-bottom-color: #38bdf8; }
+        .auth-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .auth-card { background: #ffffff; width: 100%; max-width: 400px; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
+        .auth-tabs { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; }
+        .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 14px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
+        .auth-tab.active { color: #0284c7; border-bottom-color: #0284c7; }
         
         .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #cbd5e1; margin-bottom: 6px; }
-        .form-control { width: 100%; padding: 12px 14px; background: #0f172a; border: 1px solid #334155; border-radius: 8px; color: #fff; font-size: 13px; }
-        .form-control:focus { border-color: #38bdf8; }
-        .btn-auth { width: 100%; padding: 12px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; font-weight: 700; border-radius: 8px; margin-top: 10px; }
-        .auth-switch { text-align: center; font-size: 12px; color: #94a3b8; margin-top: 16px; }
-        .auth-switch span { color: #38bdf8; text-decoration: underline; cursor: pointer; font-weight: 600; }
+        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+        .form-control { width: 100%; background: #f8fafc; color: #0f172a; font-size: 13px; }
+        .form-control:focus { border-color: #0284c7; background: #fff; }
+        .btn-auth { width: 100%; padding: 12px; background: #0284c7; color: white; font-weight: 700; border-radius: 8px; margin-top: 10px; }
+        .btn-auth:hover { background: #0369a1; }
+        .auth-switch { text-align: center; font-size: 12px; color: #64748b; margin-top: 16px; }
+        .auth-switch span { color: #0284c7; text-decoration: underline; cursor: pointer; font-weight: 600; }
 
         /* TRACK MY ORDER BANNER */
-        .track-banner { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .track-banner { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .btn-track { background: #0284c7; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; }
 
         /* CATALOG GRID */
-        .catalog-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
-        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-        .card-product { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background: #0f172a; margin-bottom: 10px; }
-        .product-name { font-size: 14px; font-weight: 700; color: #f8fafc; margin-bottom: 4px; }
-        .product-price { font-size: 13px; font-weight: 700; color: #38bdf8; margin-bottom: 6px; }
-        .product-desc { font-size: 11px; color: #94a3b8; margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .btn-buy-card { width: 100%; padding: 8px; background: #22c55e; color: white; font-weight: 700; font-size: 12px; border-radius: 6px; }
+        .catalog-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #0f172a; }
+        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+        .card-product { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background: #f1f5f9; margin-bottom: 10px; }
+        .product-name { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+        .product-price { font-size: 15px; font-weight: 800; color: #0284c7; }
+        .product-desc { font-size: 11px; color: #64748b; margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .btn-buy-card { width: 100%; padding: 8px; background: #16a34a; color: white; font-weight: 700; font-size: 12px; border-radius: 6px; margin-top: 6px; }
+
+        /* REVIEWS LIST IN MODAL */
+        .review-item { display: flex; gap: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px; align-items: flex-start; }
+        .review-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #cbd5e1; flex-shrink: 0; }
+        .review-user { font-size: 12px; font-weight: 700; color: #0f172a; }
+        .review-text { font-size: 11px; color: #475569; margin-top: 2px; }
 
         /* MODAL COMMON */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.8); z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-card { background: #1e293b; width: 100%; max-width: 450px; border-radius: 16px; padding: 20px; border: 1px solid #334155; position: relative; }
-        .modal-close { position: absolute; right: 16px; top: 16px; color: #94a3b8; font-size: 18px; cursor: pointer; }
-        .selected-prod-box { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #334155; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(2px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px; }
+        .modal-card { background: #ffffff; width: 100%; max-width: 450px; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; position: relative; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
+        .modal-close { position: absolute; right: 16px; top: 16px; color: #64748b; font-size: 20px; cursor: pointer; font-weight: bold; }
+        .selected-prod-box { background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
 
         /* ADMIN LAYOUT */
         .admin-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
         @media (max-width: 768px) { .admin-layout { grid-template-columns: 1fr; } }
-        .admin-panel { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
+        .admin-panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
         
         table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #334155; }
-        th { color: #38bdf8; font-weight: 700; }
+        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+        th { color: #0284c7; font-weight: 700; }
         .badge-new { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 700; margin-left: 6px; }
-        .btn-update { background: #38bdf8; color: #0f172a; font-size: 10px; padding: 4px 8px; font-weight: 700; border-radius: 4px; }
-        .btn-edit { background: #eab308; color: #0f172a; font-size: 11px; padding: 6px 12px; font-weight: 700; border-radius: 6px; width: 48%; }
+        .btn-update { background: #0284c7; color: #ffffff; font-size: 10px; padding: 4px 8px; font-weight: 700; border-radius: 4px; }
+        .btn-edit { background: #eab308; color: #ffffff; font-size: 11px; padding: 6px 12px; font-weight: 700; border-radius: 6px; width: 48%; }
         .btn-delete { background: #ef4444; color: white; font-size: 11px; padding: 6px 12px; font-weight: 700; border-radius: 6px; width: 48%; }
     </style>
 </head>
@@ -69,8 +78,8 @@
 
     <header>
         <div class="brand">FindYourCam.</div>
-        <div id="user-info" style="font-size: 12px; color: #94a3b8;">
-            Logged in as: <b id="lbl-username" style="color:#fff;">-</b> 
+        <div id="user-info" style="font-size: 12px; color: #64748b;">
+            Logged in as: <b id="lbl-username" style="color:#0f172a;">-</b> 
             <button onclick="logout()" style="background:#ef4444; color:#fff; padding:4px 8px; border-radius:4px; font-size:10px; margin-left:8px;">Logout</button>
         </div>
     </header>
@@ -107,7 +116,7 @@
         <div class="track-banner">
             <div>
                 <div style="font-size: 14px; font-weight: 800;">Track My Order 📦</div>
-                <div style="font-size: 11px; color: #94a3b8;">Track your digicam shipping status</div>
+                <div style="font-size: 11px; color: #64748b;">Track your digicam shipping status</div>
             </div>
             <button class="btn-track" onclick="openTrackModal()">Track Order</button>
         </div>
@@ -122,7 +131,7 @@
             <!-- LEFT PANEL: ADD PRODUCT & MANAGE ORDERS -->
             <div>
                 <div class="admin-panel" style="margin-bottom: 20px;">
-                    <h3 style="font-size: 15px; margin-bottom: 12px; color: #38bdf8;">Admin Panel - Add Product</h3>
+                    <h3 style="font-size: 15px; margin-bottom: 12px; color: #0284c7;">Admin Panel - Add Product</h3>
                     <form onsubmit="handleAddProduct(event)">
                         <div class="form-group">
                             <label>Product Name</label>
@@ -140,7 +149,7 @@
                             <label>Upload Photo from Gallery</label>
                             <input type="file" id="adm-pimg" accept="image/*" class="form-control" style="padding: 6px;">
                         </div>
-                        <button type="submit" class="btn-auth" style="background: #0284c7;">Save Product to Catalog</button>
+                        <button type="submit" class="btn-auth">Save Product to Catalog</button>
                     </form>
                 </div>
 
@@ -165,9 +174,18 @@
 
             <!-- RIGHT PANEL: ADMIN CATALOG (EDIT / DELETE) -->
             <div class="admin-panel">
-                <h3 style="font-size: 15px; margin-bottom: 12px; color: #38bdf8;">Store Product Catalog</h3>
+                <h3 style="font-size: 15px; margin-bottom: 12px; color: #0284c7;">Store Product Catalog</h3>
                 <div id="admin-products-list"></div>
             </div>
+        </div>
+    </div>
+
+    <!-- MODAL: REVIEWS LIST -->
+    <div class="modal-overlay" id="modal-reviews">
+        <div class="modal-card">
+            <span class="modal-close" onclick="closeModal('modal-reviews')">&times;</span>
+            <h3 style="font-size: 16px; margin-bottom: 14px;" id="review-modal-title">Customer Reviews</h3>
+            <div id="reviews-container"></div>
         </div>
     </div>
 
@@ -178,9 +196,9 @@
             <h3 style="font-size: 16px; margin-bottom: 14px;">Purchase Form</h3>
             
             <div class="selected-prod-box">
-                <div style="font-size: 11px; color: #94a3b8;">Selected Product:</div>
+                <div style="font-size: 11px; color: #64748b;">Selected Product:</div>
                 <div style="font-size: 14px; font-weight: 700;" id="buy-prod-name">-</div>
-                <div style="font-size: 13px; font-weight: 700; color: #38bdf8;" id="buy-prod-price">$0</div>
+                <div style="font-size: 13px; font-weight: 700; color: #0284c7;" id="buy-prod-price">$0</div>
             </div>
 
             <form onsubmit="handleCheckout(event)">
@@ -203,9 +221,9 @@
                 </div>
                 <div class="form-group">
                     <label>Payment Subtotal</label>
-                    <input type="text" id="buy-subtotal" class="form-control" readonly style="color: #38bdf8; font-weight: 700;">
+                    <input type="text" id="buy-subtotal" class="form-control" readonly style="color: #0284c7; font-weight: 700;">
                 </div>
-                <button type="submit" class="btn-auth" style="background: #22c55e;">Buy Now</button>
+                <button type="submit" class="btn-auth" style="background: #16a34a;">Buy Now</button>
             </form>
         </div>
     </div>
@@ -220,15 +238,10 @@
     </div>
 
     <script>
-        // INITIAL DATA
+        // INITIAL DATA WITH DETAILED ATTRIBUTES & REVIEWS (ID 1-5)
         const defaultProducts = [
-            { id: 1, name: "Canon IXY Digital 930 IS", price: 180, desc: "Classic compact digicam with rich color science. Aesthetic film photography.", img: "digicam1.jpg" },
-            { id: 2, name: "Sony Cyber-shot DSC-W350", price: 140, desc: "Ultra-slim CCD sensor digicam known for iconic early 2000s flash photo aesthetics.", img: "digicam2.jpg" },
-            { id: 3, name: "Fujifilm FinePix Z33WP Pink", price: 160, desc: "Vibrant pink waterproof digicam. Extremely rare aesthetic body.", img: "digicam3.jpg" },
-            { id: 4, name: "Nikon Coolpix S210 Silver", price: 150, desc: "Sleek metallic silver finish with intuitive vintage controls.", img: "digicam4.jpg" },
-            { id: 5, name: "Olympus FE-230 Silver", price: 125, desc: "Compact body with warm-toned vintage rendering. Ideal for street snapshots.", img: "digicam5.jpg" }
-        ]:
-        id: 1,
+            {
+                id: 1,
                 name: "Canon IXY Digital 930 IS",
                 price: 185,
                 oldPrice: 220,
@@ -236,22 +249,22 @@
                 rating: "4.9",
                 category: "ready",
                 stock: 8,
-                img: "digicam1.jpg", // GANTI DENGAN FOTO DIGICAM 1
+                img: "digicam1.jpg",
                 desc: "Classic compact digicam with rich color science. Perfect for vintage aesthetic film-like photography.",
                 reviews: [
                     {
                         username: "cherries",
-                        avatar: "cherries.jpg", // GANTI DENGAN FOTO AVATAR 1
+                        avatar: "cherries.jpg",
                         text: "such a beautiful cam... aaa I didn't expect the digicam output to be this good! retro vibe totally nailed! ✨"
                     },
                     {
                         username: "Arven Thoories",
-                        avatar: "Arven.jpg", // GANTI DENGAN FOTO AVATAR 2
+                        avatar: "Arven.jpg",
                         text: "I think all the Digicams here are great. High technical fidelity and crisp output for a vintage model. Much obliged."
                     },
                     {
                         username: "cacichu",
-                        avatar: "cacichu.jpg", // GANTI DENGAN FOTO AVATAR 3
+                        avatar: "cacichu.jpg",
                         text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! <3"
                     }
                 ]
@@ -265,22 +278,22 @@
                 rating: "4.8",
                 category: "discount",
                 stock: 5,
-                img: "digicam2.jpg", // GANTI DENGAN FOTO DIGICAM 2
+                img: "digicam2.jpg",
                 desc: "Ultra-slim CCD sensor digicam known for soft skin tones and iconic early 2000s flash photo aesthetics.",
                 reviews: [
                     {
                         username: "Anderson.",
-                        avatar: "anderson.jpg", // GANTI DENGAN FOTO AVATAR 4
+                        avatar: "anderson.jpg",
                         text: "Clean sharpness, surprisingly deep color rendering. A solid addition to my kit."
                     },
                     {
                         username: "Isaiah Journey",
-                        avatar: "isaiah.jpg", // GANTI DENGAN FOTO AVATAR 5
+                        avatar: "isaiah.jpg",
                         text: "The night flash pictures look so moody and cool!! Love it sm, much gracias!"
                     },
                     {
                         username: "George Soujhr",
-                        avatar: "george.jpg", // GANTI DENGAN FOTO AVATAR 6
+                        avatar: "george.jpg",
                         text: "I bought this cams for my girlfriend, didn't expect she's so like it. Fast delivery, camera arrived in pristine mint condition. Operates smoothly, thankyou FindYourCam."
                     }
                 ]
@@ -294,7 +307,7 @@
                 rating: "5.0",
                 category: "promo",
                 stock: 3,
-                img: "digicam3.jpg", // GANTI DENGAN FOTO DIGICAM 3
+                img: "digicam3.jpg",
                 desc: "Vibrant pink waterproof digicam. Extremely rare aesthetic body with punchy contrast tones.",
                 reviews: [
                     {
@@ -323,7 +336,7 @@
                 rating: "4.7",
                 category: "ready",
                 stock: 10,
-                img: "digicam4.jpg", // GANTI DENGAN FOTO DIGICAM 4
+                img: "digicam4.jpg",
                 desc: "Sleek metallic finish digicam with quick focus and nostalgic low-light noise grain.",
                 reviews: [
                     {
@@ -352,7 +365,7 @@
                 rating: "4.6",
                 category: "discount",
                 stock: 4,
-                img: "digicam5.jpg", // GANTI DENGAN FOTO DIGICAM 5
+                img: "digicam5.jpg",
                 desc: "Lightweight vintage CCD camera with crisp lens for warm outdoor portrait shots.",
                 reviews: [
                     {
@@ -371,8 +384,8 @@
                         text: "Super cute and easy to use! Buttons are smooth!"
                     }
                 ]
-            },
-        {
+            }
+        ];
 
         let products = JSON.parse(localStorage.getItem('cam_products')) || defaultProducts;
         let orders = JSON.parse(localStorage.getItem('cam_orders')) || [];
@@ -433,20 +446,52 @@
             document.getElementById('auth-overlay').style.display = 'flex';
         }
 
-        /* CUSTOMER RENDER & PURCHASE */
+        /* CUSTOMER RENDER & REVIEWS */
         function renderCustomerProducts() {
             const container = document.getElementById('customer-products');
             container.innerHTML = products.map(p => `
                 <div class="card-product">
-                    <div>
+                    <div style="position: relative;">
+                        ${p.discount ? `<span style="position: absolute; top: 8px; left: 8px; background: #ef4444; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 2;">${p.discount}</span>` : ''}
                         <img src="${p.img}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400'">
                         <div class="product-name">${p.name}</div>
-                        <div class="product-price">${formatPrice(p.price)}</div>
+                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
+                            <span style="color: #f59e0b; font-weight: 700;">★ ${p.rating || '5.0'}</span>
+                            <span style="color: #0284c7; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: underline;" onclick="openReviewsModal(${p.id})">
+                                (${p.reviews ? p.reviews.length : 0} reviews)
+                            </span>
+                        </div>
+                        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+                            <span class="product-price">${formatPrice(p.price)}</span>
+                            ${p.oldPrice ? `<span style="font-size: 11px; color: #94a3b8; text-decoration: line-through;">${formatPrice(p.oldPrice)}</span>` : ''}
+                        </div>
+                        <div style="font-size: 11px; color: #16a34a; font-weight: 700; margin-bottom: 6px;">Stock: ${p.stock || 0} units left</div>
                         <div class="product-desc">${p.desc}</div>
                     </div>
                     <button class="btn-buy-card" onclick="openPurchaseModal(${p.id})">Add to Cart / Buy</button>
                 </div>
             `).join('');
+        }
+
+        function openReviewsModal(pId) {
+            const p = products.find(x => x.id === pId);
+            document.getElementById('review-modal-title').innerText = `Reviews for ${p.name}`;
+            const container = document.getElementById('reviews-container');
+
+            if(!p.reviews || p.reviews.length === 0) {
+                container.innerHTML = '<p style="font-size:12px; color:#64748b; text-align:center; padding:20px;">No reviews yet for this product.</p>';
+            } else {
+                container.innerHTML = p.reviews.map(r => `
+                    <div class="review-item">
+                        <img src="${r.avatar}" class="review-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(r.username)}&background=0284c7&color=fff'">
+                        <div>
+                            <div class="review-user">${r.username}</div>
+                            <div class="review-text">${r.text}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            document.getElementById('modal-reviews').style.display = 'flex';
         }
 
         function openPurchaseModal(pId) {
@@ -480,13 +525,13 @@
             const container = document.getElementById('track-content');
             
             if(userOrders.length === 0) {
-                container.innerHTML = '<p style="font-size:12px; color:#94a3b8; text-align:center; padding:20px;">No active orders found.</p>';
+                container.innerHTML = '<p style="font-size:12px; color:#64748b; text-align:center; padding:20px;">No active orders found.</p>';
             } else {
                 container.innerHTML = userOrders.map(o => `
                     <div class="selected-prod-box">
                         <div style="font-size:14px; font-weight:700;">${o.productName}</div>
-                        <div style="font-size:12px; color:#94a3b8;">Buyer: ${o.buyerName}</div>
-                        <div style="margin-top:10px; background:#1e293b; padding:8px; border-radius:6px; text-align:center; font-weight:700; color:#38bdf8; font-size:13px; border:1px solid #0284c7;">
+                        <div style="font-size:12px; color:#64748b;">Buyer: ${o.buyerName}</div>
+                        <div style="margin-top:10px; background:#ffffff; padding:8px; border-radius:6px; text-align:center; font-weight:700; color:#0284c7; font-size:13px; border:1px solid #0284c7;">
                             Status: ${o.status}
                         </div>
                     </div>
@@ -506,7 +551,7 @@
                 <tr>
                     <td><b>${o.buyerName}</b></td>
                     <td>${o.productName}</td>
-                    <td style="color:#38bdf8; font-weight:700;">${o.status}</td>
+                    <td style="color:#0284c7; font-weight:700;">${o.status}</td>
                     <td><button class="btn-update" onclick="updateOrderStatus(${o.id})">Update Status</button></td>
                 </tr>
             `).join('');
@@ -514,11 +559,11 @@
             // Render Products List in Admin
             const prodContainer = document.getElementById('admin-products-list');
             prodContainer.innerHTML = products.map(p => `
-                <div style="background:#0f172a; padding:12px; border-radius:8px; border:1px solid #334155; margin-bottom:12px;">
+                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
                     <img src="${p.img}" style="width:100%; height:120px; object-fit:cover; border-radius:6px; margin-bottom:8px;" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400'">
                     <div style="font-size:13px; font-weight:700;">${p.name}</div>
-                    <div style="font-size:12px; color:#38bdf8; font-weight:700; margin-bottom:4px;">${formatPrice(p.price)}</div>
-                    <div style="font-size:11px; color:#94a3b8; margin-bottom:8px;">${p.desc}</div>
+                    <div style="font-size:12px; color:#0284c7; font-weight:700; margin-bottom:4px;">${formatPrice(p.price)}</div>
+                    <div style="font-size:11px; color:#64748b; margin-bottom:8px;">${p.desc}</div>
                     <div style="display:flex; justify-content:space-between;">
                         <button class="btn-edit" onclick="editProduct(${p.id})">Edit</button>
                         <button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button>
@@ -556,8 +601,11 @@
                     id: Date.now(),
                     name: document.getElementById('adm-pname').value,
                     price: Number(document.getElementById('adm-pprice').value),
+                    rating: "5.0",
+                    stock: 5,
                     desc: document.getElementById('adm-pdesc').value,
-                    img: img
+                    img: img,
+                    reviews: []
                 });
                 saveData();
                 renderAdminView();
