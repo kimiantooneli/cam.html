@@ -37,7 +37,7 @@
         button { cursor: pointer; border: none; outline: none; font-family: inherit; }
         input, select { font-family: inherit; outline: none; }
 
-        /* TOAST */
+        /* TOAST NOTIFICATION */
         #toast {
             position: fixed;
             top: 20px;
@@ -130,7 +130,7 @@
         .view { display: none; padding: 16px; }
         .view.active { display: block; }
 
-        /* ONBOARDING OVERLAY */
+        /* INITIAL ONBOARDING OVERLAY */
         #auth-overlay {
             position: fixed;
             top: 0;
@@ -149,11 +149,11 @@
 
         .auth-title {
             font-family: 'Syne', sans-serif;
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 800;
             color: #0f172a;
             line-height: 1.2;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             text-align: center;
         }
 
@@ -552,16 +552,16 @@
         <div style="font-size: 18px;">📸</div>
     </header>
 
-    <!-- ONBOARDING (PILIKAN LOGIN DI HALAMAN AWAL) -->
+    <!-- ONBOARDING OVERLAY (ROLE SELECTOR & LOGIN) -->
     <div id="auth-overlay">
         <h1 class="auth-title">Welcome To Our Home,<br>FindYourCam.</h1>
-        <p class="auth-subtitle">Silakan pilih jenis akun untuk masuk</p>
+        <p class="auth-subtitle">Please select your role to continue</p>
 
-        <!-- PILIHAN MAIN ROLE -->
+        <!-- MAIN ROLE SELECTOR CARDS -->
         <div class="role-card-container">
             <div class="role-card active" id="card-cust" onclick="selectRole('customer')">
                 <div class="icon">🛍️</div>
-                <div class="title">Pembeli</div>
+                <div class="title">Buyer</div>
             </div>
             <div class="role-card" id="card-admin" onclick="selectRole('admin')">
                 <div class="icon">⚡</div>
@@ -572,21 +572,21 @@
         <form id="login-form" onsubmit="handleAuth(event)">
             <div class="form-group">
                 <label>Username</label>
-                <input type="text" id="auth-username" class="form-control" placeholder="Masukkan username" required value="customer">
+                <input type="text" id="auth-username" class="form-control" placeholder="Enter username" required value="customer">
             </div>
             <div class="form-group">
                 <label>Password</label>
-                <input type="password" id="auth-password" class="form-control" placeholder="Masukkan password" required value="123">
+                <input type="password" id="auth-password" class="form-control" placeholder="Enter password" required value="123">
             </div>
-            <button type="submit" class="btn-primary" id="auth-btn">Masuk Sekarang</button>
+            <button type="submit" class="btn-primary" id="auth-btn">Sign In Now</button>
         </form>
 
         <div class="auth-switch">
-            <span id="auth-toggle-text" onclick="toggleAuthMode()">Belum buat akun? Mari buat.</span>
+            <span id="auth-toggle-text" onclick="toggleAuthMode()">Don't have an account? Sign Up.</span>
         </div>
     </div>
 
-    <!-- VIEW HOME -->
+    <!-- VIEW: HOME -->
     <div id="view-home" class="view active">
         <div class="intro-banner">
             <h2>Welcome, happy shopping, Camers! 📸</h2>
@@ -608,13 +608,13 @@
         <div class="product-grid" id="product-list"></div>
     </div>
 
-    <!-- VIEW DETAIL -->
+    <!-- VIEW: DETAIL -->
     <div id="view-detail" class="view">
         <div class="back-btn" onclick="switchView('home')">&larr; Back to Catalog</div>
         <div id="detail-content"></div>
     </div>
 
-    <!-- VIEW CART -->
+    <!-- VIEW: CART -->
     <div id="view-cart" class="view">
         <h3 style="margin-bottom: 16px;">Your Cart 🛒</h3>
         <div id="cart-list"></div>
@@ -623,70 +623,70 @@
                 <span>Total Payment:</span>
                 <span id="cart-total">$0</span>
             </div>
-            <button class="btn-primary" onclick="checkout()">Bayar Sekarang</button>
+            <button class="btn-primary" onclick="checkout()">Checkout Now</button>
         </div>
     </div>
 
-    <!-- VIEW PROFILE -->
+    <!-- VIEW: PROFILE -->
     <div id="view-profile" class="view">
         <div class="profile-card">
-            <!-- GANTI profile-user.jpg DENGAN FOTO PROFIL PILIHANMU -->
+            <!-- REPLACE profile-user.jpg WITH YOUR PREFERRED PROFILE IMAGE -->
             <img src="profile-user.jpg" class="profile-avatar" alt="Profile" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'">
             <h3 class="profile-name" id="user-display-name">customer</h3>
             <span class="badge-vip">VIP Member</span>
         </div>
 
-        <button onclick="logout()" style="width: 100%; padding: 12px; background: #fef2f2; color: #ef4444; font-weight:700; border-radius: 10px;">Keluar</button>
+        <button onclick="logout()" style="width: 100%; padding: 12px; background: #fef2f2; color: #ef4444; font-weight:700; border-radius: 10px;">Log Out</button>
     </div>
 
-    <!-- VIEW ADMIN -->
+    <!-- VIEW: ADMIN DASHBOARD -->
     <div id="view-admin" class="view">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
             <h3>Admin Dashboard</h3>
-            <button onclick="logout()" style="color: #ef4444; font-weight:700; background:none;">Keluar</button>
+            <button onclick="logout()" style="color: #ef4444; font-weight:700; background:none;">Log Out</button>
         </div>
 
         <div class="admin-stats">
             <div class="stat-card">
                 <div class="stat-number" id="stat-items">0</div>
-                <div class="stat-label">Total Barang</div>
+                <div class="stat-label">Total Items</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="stat-stock">0</div>
-                <div class="stat-label">Total Stok</div>
+                <div class="stat-label">Total Stock</div>
             </div>
             <div class="stat-card">
                 <div class="stat-number" id="stat-orders">0</div>
-                <div class="stat-label">Total Pesanan</div>
+                <div class="stat-label">Total Orders</div>
             </div>
         </div>
 
         <div style="background: white; padding: 16px; border-radius: 12px; margin-bottom: 20px;">
-            <h4 style="margin-bottom: 10px;">Tambah Barang Baru</h4>
+            <h4 style="margin-bottom: 10px;">Add New Digicam</h4>
             <form onsubmit="adminAddProduct(event)">
                 <div class="form-group">
-                    <input type="text" id="adm-name" class="form-control" placeholder="Nama Kamera" required>
+                    <input type="text" id="adm-name" class="form-control" placeholder="Camera Name" required>
                 </div>
                 <div style="display:flex; gap:10px;">
-                    <input type="number" id="adm-price" class="form-control" placeholder="Harga ($)" required>
-                    <input type="number" id="adm-stock" class="form-control" placeholder="Stok" required>
+                    <input type="number" id="adm-price" class="form-control" placeholder="Price ($)" required>
+                    <input type="number" id="adm-stock" class="form-control" placeholder="Stock" required>
                 </div>
-                <button type="submit" class="btn-primary" style="margin-top:10px;">+ Tambah Barang</button>
+                <button type="submit" class="btn-primary" style="margin-top:10px;">+ Add Product</button>
             </form>
         </div>
 
-        <h4>Data Barang</h4>
+        <h4>Product Inventory</h4>
         <div style="overflow-x:auto; margin-top:10px;">
             <table>
                 <thead>
-                    <tr><th>ID</th><th>Nama</th><th>Harga</th><th>Aksi</th></tr>
+                    <tr><th>ID</th><th>Name</th><th>Price</th><th>Action</th></tr>
                 </thead>
                 <tbody id="admin-table"></tbody>
             </table>
         </div>
     </div>
 
-    <!-- BOTTOM NAV -->
+    <!-- BOTTOM NAVIGATION -->
     <div class="bottom-nav" id="customer-nav">
         <div class="nav-item active" onclick="switchView('home')">
             <span class="icon">🏠</span>
@@ -694,163 +694,48 @@
         </div>
         <div class="nav-item" onclick="switchView('cart')">
             <span class="icon">🛒</span>
-            <span>Keranjang</span>
+            <span>Cart</span>
             <span class="cart-badge" id="cart-count">0</span>
         </div>
         <div class="nav-item" onclick="switchView('profile')">
             <span class="icon">👤</span>
-            <span>Akun</span>
+            <span>Account</span>
         </div>
     </div>
 
     <script>
         const initialProducts = [
             {
-             id: 1,
-                name: "Canon IXY Digital 930 IS",
-                price: 185,
-                oldPrice: 220,
-                discount: "15% OFF",
-                rating: "4.9",
-                category: "ready",
-                stock: 8,
-                img: "digicam1.jpg", // GANTI DENGAN FOTO DIGICAM 1
+                id: 1, name: "Canon IXY Digital 930 IS", price: 185, oldPrice: 220, discount: "15% OFF", rating: "4.9", category: "ready", stock: 8,
+                img: "digicam1.jpg", // DEFAULT CAMERA IMAGE 1
                 desc: "Classic compact digicam with rich color science. Perfect for vintage aesthetic film-like photography.",
                 reviews: [
-                    {
-                        username: "cherries",
-                        avatar: "cherries.jpg", // GANTI DENGAN FOTO AVATAR 1
-                        text: "such a beautiful cam... aaa I didn't expect the digicam output to be this good! retro vibe totally nailed! ✨"
-                    },
-                    {
-                        username: "Arven Thoories",
-                        avatar: "Arven.jpg", // GANTI DENGAN FOTO AVATAR 2
-                        text: "I think all the Digicams here are great. High technical fidelity and crisp output for a vintage model. Much obliged."
-                    },
-                    {
-                        username: "cacichu",
-                        avatar: "cacichu.jpg", // GANTI DENGAN FOTO AVATAR 3
-                        text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! <3"
-                    }
+                    { username: "cherries", avatar: "cherries.jpg", text: "such a beautiful cam... aaa I didn't expect the digicam output to be this good! retro vibe totally nailed! " },
+                    { username: "Arven Thoories", avatar: "Arven.jpg", text: "I think all the Digicams here are great. High technical fidelity and crisp output for a vintage model. Much obliged." },
+                    { username: "cacichu", avatar: "cacichu.jpg", text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! " }
                 ]
             },
             {
-                id: 2,
-                name: "Sony Cyber-shot DSC-W350",
-                price: 140,
-                oldPrice: 175,
-                discount: "20% OFF",
-                rating: "4.8",
-                category: "discount",
-                stock: 5,
-                img: "digicam2.jpg", // GANTI DENGAN FOTO DIGICAM 2
+                id: 2, name: "Sony Cyber-shot DSC-W350", price: 140, oldPrice: 175, discount: "20% OFF", rating: "4.8", category: "discount", stock: 5,
+                img: "digicam2.jpg", // DEFAULT CAMERA IMAGE 2
                 desc: "Ultra-slim CCD sensor digicam known for soft skin tones and iconic early 2000s flash photo aesthetics.",
                 reviews: [
-                    {
-                        username: "Anderson.",
-                        avatar: "anderson.jpg", // GANTI DENGAN FOTO AVATAR 4
-                        text: "Clean sharpness, surprisingly deep color rendering. A solid addition to my kit."
-                    },
-                    {
-                        username: "Isaiah Journey",
-                        avatar: "isaiah.jpg", // GANTI DENGAN FOTO AVATAR 5
-                        text: "The night flash pictures look so moody and cool!! Love it sm, much gracias!"
-                    },
-                    {
-                        username: "George Soujhr",
-                        avatar: "george.jpg", // GANTI DENGAN FOTO AVATAR 6
-                        text: "I bought this cams for my girlfriend, didn't expect she's so like it. Fast delivery, camera arrived in pristine mint condition. Operates smoothly, thankyou FindYourCam."
-                    }
+                    { username: "Anderson.", avatar: "anderson.jpg", text: "Clean sharpness, surprisingly deep color rendering. A solid addition to my kit." },
+                    { username: "Isaiah Journey", avatar: "isaiah.jpg", text: "The night flash pictures look so moody and cool!! Love it sm <3" },
+                    { username: "George Soujhr", avatar: "george.jpg", text: "I bought this cams for my girlfriend, didn't expect she's so like it. Fast delivery, camera arrived in pristine mint condition." }
                 ]
             },
             {
-                id: 3,
-                name: "Fujifilm FinePix Z33WP Pink",
-                price: 165,
-                oldPrice: 190,
-                discount: "12% OFF",
-                rating: "5.0",
-                category: "promo",
-                stock: 3,
-                img: "digicam3.jpg", // GANTI DENGAN FOTO DIGICAM 3
+                id: 3, name: "Fujifilm FinePix Z33WP Pink", price: 165, oldPrice: 190, discount: "12% OFF", rating: "5.0", category: "promo", stock: 3,
+                img: "digicam3.jpg", // DEFAULT CAMERA IMAGE 3
                 desc: "Vibrant pink waterproof digicam. Extremely rare aesthetic body with punchy contrast tones.",
                 reviews: [
-                    {
-                        username: "maureen vseih",
-                        avatar: "maureen.jpg",
-                        text: "PINK PINK PINK! Absolute perfection! I'm screaming because of how adorable this camera is!"
-                    },
-                    {
-                        username: "belleyourfavorite",
-                        avatar: "belle.jpg",
-                        text: "The tone is naturally warm and dreamy! No editing needed at all!"
-                    },
-                    {
-                        username: "Parker",
-                        avatar: "zeon.jpg",
-                        text: "Surprisingly rugged build despite the bright aesthetic color scheme. Excellent shutter response."
-                    }
+                    { username: "maureen vseih", avatar: "maureen.jpg", text: "PINK PINK PINK!  Absolute perfection! I'm screaming because of how adorable this camera is!" },
+                    { username: "belleyourfagorite", avatar: "belle.jpg", text: "The tone is naturally warm and dreamy! No editing needed at all!" }
                 ]
-            },
-            {
-                id: 4,
-                name: "Nikon Coolpix S210",
-                price: 130,
-                oldPrice: 150,
-                discount: "10% OFF",
-                rating: "4.7",
-                category: "ready",
-                stock: 10,
-                img: "digicam4.jpg", // GANTI DENGAN FOTO DIGICAM 4
-                desc: "Sleek metallic finish digicam with quick focus and nostalgic low-light noise grain.",
-                reviews: [
-                    {
-                        username: "Soren",
-                        avatar: "soren.jpg",
-                        text: "Reliable ergonomics. Compact enough for daily pocket carry without sacrificing optical clarity."
-                    },
-                    {
-                        username: "Velix 4sho",
-                        avatar: "velix.jpg",
-                        text: "Great vintage look. Really good value for money."
-                    },
-                    {
-                        username: "mills",
-                        avatar: "cami.jpg",
-                        text: "Gives that iconic Y2K celebrity photo look! obsessed!"
-                    }
-                ]
-            },
-            {
-                id: 5,
-                name: "Olympus Camedia FE-230",
-                price: 110,
-                oldPrice: 140,
-                discount: "25% OFF",
-                rating: "4.6",
-                category: "discount",
-                stock: 4,
-                img: "digicam5.jpg", // GANTI DENGAN FOTO DIGICAM 5
-                desc: "Lightweight vintage CCD camera with crisp lens for warm outdoor portrait shots.",
-                reviews: [
-                    {
-                        username: "zeell",
-                        avatar: "zella.jpg",
-                        text: "Took this to concert and results were immaculate! 1000/10!"
-                    },
-                    {
-                        username: "KAAALILAAAA",
-                        avatar: "kalila.jpg",
-                        text: "Solid construction, dynamic range is remarkable for its era."
-                    },
-                    {
-                        username: "kimi22",
-                        avatar: "kimi.jpg",
-                        text: "Super cute and easy to use! Buttons are smooth!"
-                    }
-                ]
-            },
-        {
+            }
+        ];
+        
 
         let products = JSON.parse(localStorage.getItem('barang')) || initialProducts;
         let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
@@ -872,8 +757,8 @@
 
         function toggleAuthMode() {
             isRegister = !isRegister;
-            document.getElementById('auth-btn').innerText = isRegister ? 'Buat Akun Baru' : 'Masuk Sekarang';
-            document.getElementById('auth-toggle-text').innerText = isRegister ? 'Sudah punya akun? Login' : 'Belum buat akun? Mari buat.';
+            document.getElementById('auth-btn').innerText = isRegister ? 'Create Account' : 'Sign In Now';
+            document.getElementById('auth-toggle-text').innerText = isRegister ? 'Already have an account? Sign In' : "Don't have an account? Sign Up.";
         }
 
         function handleAuth(e) {
@@ -890,7 +775,7 @@
                 document.getElementById('customer-nav').style.display = 'none';
                 switchView('admin');
                 renderAdmin();
-                showToast('Selamat datang Admin ' + username);
+                showToast('Welcome Admin ' + username + '!');
             } else {
                 document.body.classList.remove('admin-mode');
                 document.getElementById('main-header').style.display = 'flex';
@@ -936,7 +821,7 @@
                         <span class="price-old">$${p.oldPrice}</span>
                     </div>
                     <div class="rating">⭐ ${p.rating}</div>
-                    <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 Beli Sekarang</button>
+                    <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 Buy Now</button>
                 </div>
             `).join('');
         }
@@ -977,7 +862,7 @@
             cart.push(item);
             saveState();
             updateCartBadge();
-            showToast('Produk masuk ke keranjang!');
+            showToast('Added to cart!');
         }
 
         function updateCartBadge() {
@@ -988,7 +873,7 @@
             const container = document.getElementById('cart-list');
             let total = 0;
             if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:20px;">Keranjang kosong.</p>';
+                container.innerHTML = '<p style="text-align:center; color:#94a3b8; padding:20px;">Your cart is empty.</p>';
             } else {
                 container.innerHTML = cart.map((item, i) => {
                     total += item.price;
@@ -1008,11 +893,11 @@
         }
 
         function checkout() {
-            if (cart.length === 0) return showToast('Keranjang masih kosong!');
+            if (cart.length === 0) return showToast('Your cart is empty!');
             cart = [];
             saveState();
             updateCartBadge();
-            showToast('Checkout Berhasil');
+            showToast('Checkout Successful!');
             switchView('home');
         }
 
@@ -1034,7 +919,7 @@
                     <td>#${p.id}</td>
                     <td>${p.name}</td>
                     <td>$${p.price}</td>
-                    <td><button onclick="products=products.filter(x=>x.id!==${p.id}); saveState(); renderAdmin(); renderProducts(products);" style="color:#ef4444; background:none;">Hapus</button></td>
+                    <td><button onclick="products=products.filter(x=>x.id!==${p.id}); saveState(); renderAdmin(); renderProducts(products);" style="color:#ef4444; background:none;">Delete</button></td>
                 </tr>
             `).join('');
         }
@@ -1054,7 +939,7 @@
             renderAdmin();
             renderProducts(products);
             e.target.reset();
-            showToast('Barang baru ditambahkan!');
+            showToast('New camera added!');
         }
 
         function showToast(msg) {
@@ -1067,7 +952,7 @@
         window.onload = function() {
             saveState();
             renderProducts(products);
-            updateCartBadge();
+            updateCartBadge();u
             if (currentUser) {
                 document.getElementById('auth-overlay').style.display = 'none';
                 if (currentUser.role === 'admin') {
