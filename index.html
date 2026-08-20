@@ -31,6 +31,11 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
         }
 
+        body.admin-mode {
+            max-width: 100% !important;
+            padding-bottom: 0 !important;
+        }
+
         a { text-decoration: none; color: inherit; }
         button { cursor: pointer; border: none; outline: none; font-family: inherit; }
         input, select { font-family: inherit; outline: none; }
@@ -80,11 +85,6 @@
             font-weight: 800;
             color: #0f172a;
             letter-spacing: -0.5px;
-        }
-
-        .header-action {
-            position: relative;
-            font-size: 20px;
         }
 
         /* --- BOTTOM NAVIGATION --- */
@@ -172,7 +172,30 @@
         .auth-subtitle {
             font-size: 14px;
             color: #64748b;
-            margin-bottom: 30px;
+            margin-bottom: 24px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 10px;
+            border: 1.5px solid #e2e8f0;
+            background: #f8fafc;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #64748b;
+        }
+
+        .role-btn.active {
+            border-color: #0f172a;
+            background: #0f172a;
+            color: #ffffff;
         }
 
         .form-group {
@@ -214,8 +237,6 @@
             margin-top: 10px;
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
             cursor: pointer;
-            position: relative;
-            z-index: 10;
         }
 
         .auth-switch {
@@ -232,7 +253,7 @@
             text-decoration: underline;
         }
 
-        /* --- INTRO BANNER --- */
+        /* --- HOME BANNER & PRODUCTS --- */
         .intro-banner {
             background: #0f172a;
             color: #ffffff;
@@ -251,7 +272,6 @@
             color: #94a3b8;
         }
 
-        /* --- SEARCH & TABS --- */
         .search-box {
             position: relative;
             margin-bottom: 16px;
@@ -301,7 +321,6 @@
             border-color: #0f172a;
         }
 
-        /* --- PRODUCT GRID --- */
         .section-title {
             font-size: 16px;
             font-weight: 700;
@@ -416,7 +435,7 @@
 
         .detail-img {
             width: 100%;
-            height: 250px;
+            height: 240px;
             object-fit: cover;
             border-radius: 16px;
             margin-bottom: 16px;
@@ -535,6 +554,12 @@
             border: 1px solid #f1f5f9;
         }
 
+        .cart-item-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #0f172a;
+        }
+
         .cart-item img {
             width: 60px;
             height: 60px;
@@ -625,45 +650,104 @@
             font-size: 13px;
             border-radius: 10px;
         }
+
+        /* --- ADMIN DASHBOARD VIEW --- */
+        .admin-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .admin-table-container {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        th { background: #f8fafc; font-weight: 700; color: #475569; }
     </style>
 </head>
 <body>
 
     <!-- TOAST NOTIFICATION -->
-    <div id="toast"><span>✨</span> <span id="toast-text">Message</span></div>
+    <div id="toast"><span>✨</span> <span id="toast-text">Notification</span></div>
 
     <!-- HEADER -->
-    <header>
+    <header id="main-header">
         <div class="brand-logo">FindYourCam.</div>
-        <div class="header-action">📸</div>
+        <div style="font-size: 20px;">📸</div>
     </header>
 
     <!-- ONBOARDING & AUTH OVERLAY -->
     <div id="auth-overlay">
-        <!-- STEP 1: WELCOME -->
+        <!-- STEP 1: INPUT EMAIL -->
         <div id="auth-step-1">
             <h1 class="auth-title">Welcome To Our Home,<br>FindYourCam.</h1>
             <p class="auth-subtitle">Discover vintage digital cameras curated just for you.</p>
-            <button class="btn-primary" onclick="goToStep(2)">Get Started &rarr;</button>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="auth-email" class="form-control" placeholder="example@mail.com" value="customeremail.com">
+            </div>
+            <button class="btn-primary" onclick="goToStep(2)">Continue &rarr;</button>
         </div>
 
-        <!-- STEP 2: LOGIN / REGISTER -->
+        <!-- STEP 2: USERNAME & PASSWORD -->
         <div id="auth-step-2" style="display: none;">
             <h1 class="auth-title" id="auth-form-title">Login Account</h1>
-            <p class="auth-subtitle" id="auth-form-sub">Sign in to start exploring catalog.</p>
+            <p class="auth-subtitle">Select role and enter your credentials.</p>
+
+            <div class="role-selector">
+                <button class="role-btn active" id="role-cust-btn" onclick="selectRole('customer')">Customer</button>
+                <button class="role-btn" id="role-admin-btn" onclick="selectRole('admin')">Admin</button>
+            </div>
 
             <form id="login-form" onsubmit="handleAuth(event)">
-                <div class="form-group" id="email-group" style="display: none;">
-                    <label>Email Address</label>
-                    <input type="email" id="auth-email" class="form-control" placeholder="example@mail.com">
-                </div>
                 <div class="form-group">
                     <label>Username</label>
-                    <input type="text" id="auth-username" class="form-control" placeholder="Enter username" required>
+                    <input type="text" id="auth-username" class="form-control" placeholder="Enter username" required value="customer">
                 </div>
                 <div class="form-group">
                     <label>Password</label>
-                    <input type="password" id="auth-password" class="form-control" placeholder="Enter password" required>
+                    <input type="password" id="auth-password" class="form-control" placeholder="Enter password" required value="123">
                 </div>
                 <button type="submit" class="btn-primary" id="auth-submit-btn">Login</button>
             </form>
@@ -693,9 +777,9 @@
             <button class="tab-btn" onclick="switchTab(this, 'promo')">Promo</button>
         </div>
 
-        <h3 class="section-title">Catalog Showcase</h3>
+        <h3 class="section-title">Recommended Digicams</h3>
         <div class="product-grid" id="product-list">
-            <!-- Dynamic Render -->
+            <!-- Dynamic Products -->
         </div>
     </div>
 
@@ -718,50 +802,144 @@
                 <span>Total Payment</span>
                 <span id="cart-total">$0</span>
             </div>
-            <button class="btn-primary" onclick="checkout()">Checkout Now</button>
+            <button class="btn-primary" onclick="checkout()">Bayar Sekarang</button>
         </div>
     </div>
 
     <!-- VIEW 4: PROFILE -->
     <div id="view-profile" class="view">
         <div class="profile-card">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="profile-avatar" alt="User">
-            <h3 class="profile-name" id="user-display-name">Camera Enthusiast</h3>
-            <p class="profile-email">camers@findyourcam.com</p>
-            <span class="badge-vip">MEMBER VIP</span>
+            <!-- GANTI "profile-user.jpg" DENGAN FOTO PROFIL PILIHANMU -->
+            <img src="profile-user.jpg" class="profile-avatar" alt="User Avatar" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'">
+            <h3 class="profile-name" id="user-display-name">customer</h3>
+            <p class="profile-email" id="user-display-email">customeremail.com</p>
+            <span class="badge-vip">VIP Member</span>
         </div>
 
+        <h4 style="font-size: 13px; margin-bottom: 10px;">Pesanan Saya</h4>
         <div class="order-status-grid">
-            <div>📦<br>Pending</div>
-            <div>🚚<br>Shipped</div>
-            <div>✨<br>Completed</div>
-            <div>💬<br>Reviews</div>
+            <div>💳<br>Belum Bayar</div>
+            <div>📦<br>Dikemas</div>
+            <div>🚚<br>Dikirim</div>
+            <div>⭐<br>Beri Penilaian</div>
         </div>
 
-        <button class="btn-logout" onclick="logout()">Logout Account</button>
+        <button class="btn-logout" onclick="logout()">Keluar</button>
+    </div>
+
+    <!-- VIEW 5: ADMIN DASHBOARD -->
+    <div id="view-admin" class="view">
+        <div class="admin-layout">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>Admin Dashboard</h3>
+                <button onclick="logout()" style="color: #ef4444; font-weight: 700; background: none;">Logout</button>
+            </div>
+
+            <!-- STATISTIK -->
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-total-items">0</div>
+                    <div class="stat-label">Total Barang</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-total-stock">0</div>
+                    <div class="stat-label">Total Stok</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="stat-total-orders">0</div>
+                    <div class="stat-label">Total Pesanan</div>
+                </div>
+            </div>
+
+            <!-- INPUT BARANG -->
+            <div style="background: #ffffff; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                <h4 style="margin-bottom: 12px;">Input Barang Baru</h4>
+                <form onsubmit="adminAddProduct(event)">
+                    <div class="form-group">
+                        <label>Nama Camera</label>
+                        <input type="text" id="admin-p-name" class="form-control" required placeholder="e.g. Sony Cyber-shot">
+                    </div>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="form-group" style="flex:1;">
+                            <label>Harga ($)</label>
+                            <input type="number" id="admin-p-price" class="form-control" required placeholder="150">
+                        </div>
+                        <div class="form-group" style="flex:1;">
+                            <label>Stok</label>
+                            <input type="number" id="admin-p-stock" class="form-control" required placeholder="5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Kategori</label>
+                        <select id="admin-p-cat" class="form-control">
+                            <option value="ready">Cams ready to buy</option>
+                            <option value="discount">Digicam Discount</option>
+                            <option value="promo">Promo</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary" style="margin-top:0;">+ Tambah Barang</button>
+                </form>
+            </div>
+
+            <!-- TABEL DATA BARANG -->
+            <h4>Data Barang</h4>
+            <div class="admin-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nama</th>
+                            <th>Harga</th>
+                            <th>Stok</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-items-tbody"></tbody>
+                </table>
+            </div>
+
+            <!-- TABEL PESANAN -->
+            <h4>Tabel Pesanan</h4>
+            <div class="admin-table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-orders-tbody">
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: #94a3b8;">Belum ada pesanan masuk.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- BOTTOM NAVIGATION -->
-    <div class="bottom-nav">
+    <div class="bottom-nav" id="customer-nav">
         <div class="nav-item active" onclick="switchView('home')">
             <span class="icon">🏠</span>
             <span>Home</span>
         </div>
         <div class="nav-item" onclick="switchView('cart')">
             <span class="icon">🛒</span>
-            <span>Cart</span>
+            <span>Keranjang</span>
             <span class="cart-badge" id="cart-count">0</span>
         </div>
         <div class="nav-item" onclick="switchView('profile')">
             <span class="icon">👤</span>
-            <span>Profile</span>
+            <span>Akun</span>
         </div>
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // DATA PRODUK DENGAN LINK AVATAR LENGKAP
-        const products = [
+        // INITIAL INITIAL PRODUCTS DATA
+        const initialProducts = [
             {
                 id: 1,
                 name: "Canon IXY Digital 930 IS",
@@ -770,23 +948,24 @@
                 discount: "15% OFF",
                 rating: "4.9",
                 category: "ready",
-                img: "digicam1.jpg",
+                stock: 8,
+                img: "digicam1.jpg", // GANTI DENGAN FOTO DIGICAM 1
                 desc: "Classic compact digicam with rich color science. Perfect for vintage aesthetic film-like photography.",
                 reviews: [
                     {
                         username: "cherries",
-                        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", 
+                        avatar: "cherries.jpg", // GANTI DENGAN FOTO AVATAR 1
                         text: "such a beautiful cam... aaa I didn't expect the digicam output to be this good! retro vibe totally nailed! ✨"
                     },
                     {
                         username: "Arven Thoories",
-                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", 
+                        avatar: "Arven.jpg", // GANTI DENGAN FOTO AVATAR 2
                         text: "I think all the Digicams here are great. High technical fidelity and crisp output for a vintage model. Much obliged."
                     },
                     {
                         username: "cacichu",
-                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", 
-                        text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! 💖"
+                        avatar: "cacichu.jpg", // GANTI DENGAN FOTO AVATAR 3
+                        text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! <3"
                     }
                 ]
             },
@@ -798,22 +977,23 @@
                 discount: "20% OFF",
                 rating: "4.8",
                 category: "discount",
-                img: "digicam3.jpg",
+                stock: 5,
+                img: "digicam2.jpg", // GANTI DENGAN FOTO DIGICAM 2
                 desc: "Ultra-slim CCD sensor digicam known for soft skin tones and iconic early 2000s flash photo aesthetics.",
                 reviews: [
                     {
                         username: "Anderson.",
-                        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+                        avatar: "anderson.jpg", // GANTI DENGAN FOTO AVATAR 4
                         text: "Clean sharpness, surprisingly deep color rendering. A solid addition to my kit."
                     },
                     {
                         username: "Isaiah Journey",
-                        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
-                        text: "The night flash pictures look so moody and cool!! Love it sm <3"
+                        avatar: "isaiah.jpg", // GANTI DENGAN FOTO AVATAR 5
+                        text: "The night flash pictures look so moody and cool!! Love it sm, much gracias!"
                     },
                     {
                         username: "George Soujhr",
-                        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100",
+                        avatar: "george.jpg", // GANTI DENGAN FOTO AVATAR 6
                         text: "I bought this cams for my girlfriend, didn't expect she's so like it. Fast delivery, camera arrived in pristine mint condition. Operates smoothly, thankyou FindYourCam."
                     }
                 ]
@@ -826,22 +1006,23 @@
                 discount: "12% OFF",
                 rating: "5.0",
                 category: "promo",
-                img: "digicam2.jpg",
+                stock: 3,
+                img: "digicam3.jpg", // GANTI DENGAN FOTO DIGICAM 3
                 desc: "Vibrant pink waterproof digicam. Extremely rare aesthetic body with punchy contrast tones.",
                 reviews: [
                     {
                         username: "maureen vseih",
-                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
-                        text: "PINK PINK PINK! 🌸 Absolute perfection! I'm screaming because of how adorable this camera is!"
+                        avatar: "maureen.jpg",
+                        text: "PINK PINK PINK! Absolute perfection! I'm screaming because of how adorable this camera is!"
                     },
                     {
-                        username: "belleyourfagorite",
-                        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+                        username: "belleyourfavorite",
+                        avatar: "belle.jpg",
                         text: "The tone is naturally warm and dreamy! No editing needed at all!"
                     },
                     {
                         username: "Parker",
-                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+                        avatar: "zeon.jpg",
                         text: "Surprisingly rugged build despite the bright aesthetic color scheme. Excellent shutter response."
                     }
                 ]
@@ -854,22 +1035,23 @@
                 discount: "10% OFF",
                 rating: "4.7",
                 category: "ready",
-                img: "digicam4.jpg",
+                stock: 10,
+                img: "digicam4.jpg", // GANTI DENGAN FOTO DIGICAM 4
                 desc: "Sleek metallic finish digicam with quick focus and nostalgic low-light noise grain.",
                 reviews: [
                     {
                         username: "Soren",
-                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+                        avatar: "soren.jpg",
                         text: "Reliable ergonomics. Compact enough for daily pocket carry without sacrificing optical clarity."
                     },
                     {
                         username: "Velix 4sho",
-                        avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+                        avatar: "velix.jpg",
                         text: "Great vintage look. Really good value for money."
                     },
                     {
                         username: "mills",
-                        avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
+                        avatar: "cami.jpg",
                         text: "Gives that iconic Y2K celebrity photo look! obsessed!"
                     }
                 ]
@@ -882,30 +1064,43 @@
                 discount: "25% OFF",
                 rating: "4.6",
                 category: "discount",
-                img: "digicam5.jpg",
+                stock: 4,
+                img: "digicam5.jpg", // GANTI DENGAN FOTO DIGICAM 5
                 desc: "Lightweight vintage CCD camera with crisp lens for warm outdoor portrait shots.",
                 reviews: [
                     {
                         username: "zeell",
-                        avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+                        avatar: "zella.jpg",
                         text: "Took this to concert and results were immaculate! 1000/10!"
                     },
                     {
                         username: "KAAALILAAAA",
-                        avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100",
+                        avatar: "kalila.jpg",
                         text: "Solid construction, dynamic range is remarkable for its era."
                     },
                     {
                         username: "kimi22",
-                        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
+                        avatar: "kimi.jpg",
                         text: "Super cute and easy to use! Buttons are smooth!"
                     }
                 ]
-            }
-        ];
+            },
+            {
+                
 
-        let cart = [];
+        // STATE & LOCALSTORAGE
+        let products = JSON.parse(localStorage.getItem('barang')) || initialProducts;
+        let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('CamUser')) || null;
+        let currentRole = 'customer';
         let isRegisterMode = false;
+
+        // SAVE STATE
+        function saveState() {
+            localStorage.setItem('barang', JSON.stringify(products));
+            localStorage.setItem('FindYourCamCart', JSON.stringify(cart));
+            localStorage.setItem('CamUser', JSON.stringify(currentUser));
+        }
 
         // ONBOARDING & AUTHENTICATION
         function goToStep(step) {
@@ -915,26 +1110,58 @@
             }
         }
 
+        function selectRole(role) {
+            currentRole = role;
+            document.getElementById('role-cust-btn').classList.toggle('active', role === 'customer');
+            document.getElementById('role-admin-btn').classList.toggle('active', role === 'admin');
+        }
+
         function toggleAuthMode() {
             isRegisterMode = !isRegisterMode;
-            document.getElementById('email-group').style.display = isRegisterMode ? 'block' : 'none';
-            document.getElementById('auth-form-title').innerText = isRegisterMode ? 'Register Account' : 'Login Account';
+            document.getElementById('auth-form-title').innerText = isRegisterMode ? 'Create Account' : 'Login Account';
             document.getElementById('auth-submit-btn').innerText = isRegisterMode ? 'Register' : 'Login';
             document.getElementById('auth-toggle-text').innerText = isRegisterMode ? 'Sudah punya akun? Login' : 'Belum buat akun? Mari buat.';
         }
 
         function handleAuth(event) {
             event.preventDefault();
+            const email = document.getElementById('auth-email').value;
             const username = document.getElementById('auth-username').value;
-            document.getElementById('user-display-name').innerText = username || 'Camera Enthusiast';
+
+            currentUser = { username, email, role: currentRole };
+            saveState();
+
             document.getElementById('auth-overlay').style.display = 'none';
-            showToast('Selamat datang, ' + username + '!');
+
+            if (currentRole === 'admin') {
+                document.body.classList.add('admin-mode');
+                document.getElementById('main-header').style.display = 'none';
+                document.getElementById('customer-nav').style.display = 'none';
+                switchView('admin');
+                renderAdmin();
+                showToast('Welcome Admin ' + username);
+            } else {
+                document.body.classList.remove('admin-mode');
+                document.getElementById('main-header').style.display = 'flex';
+                document.getElementById('customer-nav').style.display = 'flex';
+                document.getElementById('user-display-name').innerText = username;
+                document.getElementById('user-display-email').innerText = email;
+                switchView('home');
+                showToast('Welcome ' + username + '!');
+            }
         }
 
         function logout() {
+            currentUser = null;
+            cart = [];
+            saveState();
+            updateCartBadge();
             document.getElementById('auth-overlay').style.display = 'flex';
             document.getElementById('auth-step-1').style.display = 'block';
             document.getElementById('auth-step-2').style.display = 'none';
+            document.body.classList.remove('admin-mode');
+            document.getElementById('main-header').style.display = 'flex';
+            document.getElementById('customer-nav').style.display = 'flex';
         }
 
         // VIEW NAVIGATION
@@ -944,14 +1171,15 @@
 
             document.getElementById(`view-${viewName}`).classList.add('active');
             
-            // Highlight active bottom tab
-            const navIndex = viewName === 'home' ? 0 : viewName === 'cart' ? 1 : 2;
-            document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+            if (viewName !== 'admin') {
+                const navIndex = viewName === 'home' ? 0 : viewName === 'cart' ? 1 : 2;
+                document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+            }
 
             if (viewName === 'cart') renderCart();
         }
 
-        // RENDER PRODUCTS
+        // RENDER PRODUCTS (HOME)
         function renderProducts(items) {
             const container = document.getElementById('product-list');
             container.innerHTML = items.map(p => `
@@ -964,7 +1192,7 @@
                         <span class="price-old">$${p.oldPrice}</span>
                     </div>
                     <div class="rating">⭐ ${p.rating}</div>
-                    <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Add to Cart</button>
+                    <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">🛒 Beli Sekarang</button>
                 </div>
             `).join('');
         }
@@ -984,16 +1212,16 @@
                 <p class="detail-desc">${product.desc}</p>
                 
                 <div class="action-group">
-                    <button class="btn-cart" onclick="addToCart(${product.id})">Add to Cart</button>
-                    <button class="btn-direct-buy" onclick="addToCart(${product.id}); switchView('cart');">Buy Now</button>
+                    <button class="btn-cart" onclick="addToCart(${product.id})">+ Add To Cart</button>
+                    <button class="btn-direct-buy" onclick="addToCart(${product.id}); switchView('cart');">🛒 Buy Now</button>
                 </div>
 
                 <div class="reviews-container">
-                    <h4 style="margin-bottom: 12px; font-size: 14px;">Customer Reviews (${product.reviews.length})</h4>
-                    ${product.reviews.map(r => `
+                    <h4 style="margin-bottom: 12px; font-size: 14px;">Customer Reviews (${product.reviews ? product.reviews.length : 0})</h4>
+                    ${product.reviews ? product.reviews.map(r => `
                         <div class="review-card">
                             <div class="review-header">
-                                <img src="${r.avatar}" class="avatar" alt="${r.username}">
+                                <img src="${r.avatar}" class="avatar" alt="${r.username}" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100'">
                                 <div class="user-info">
                                     <div class="username">${r.username}</div>
                                     <div class="stars">⭐⭐⭐⭐⭐</div>
@@ -1001,7 +1229,7 @@
                             </div>
                             <div class="review-text">${r.text}</div>
                         </div>
-                    `).join('')}
+                    `).join('') : '<p style="font-size:12px; color:#94a3b8;">No reviews yet.</p>'}
                 </div>
             `;
             switchView('detail');
@@ -1028,15 +1256,26 @@
         // CART LOGIC
         function addToCart(id) {
             const item = products.find(p => p.id === id);
-            cart.push(item);
+            cart.push({...item, cartId: Date.now(), checked: true});
+            saveState();
+            updateCartBadge();
+            showToast('Produk ditambahkan ke keranjang!');
+        }
+
+        function updateCartBadge() {
             document.getElementById('cart-count').innerText = cart.length;
-            showToast('Kamera berhasil masuk keranjang!');
+        }
+
+        function toggleCartCheck(index) {
+            cart[index].checked = !cart[index].checked;
+            saveState();
+            renderCart();
         }
 
         function renderCart() {
             const container = document.getElementById('cart-list');
             if (cart.length === 0) {
-                container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">Keranjangmu masih kosong.</p>';
+                container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">Keranjang belanja kosong.</p>';
                 document.getElementById('cart-subtotal').innerText = '$0';
                 document.getElementById('cart-total').innerText = '$0';
                 return;
@@ -1044,15 +1283,16 @@
 
             let total = 0;
             container.innerHTML = cart.map((item, index) => {
-                total += item.price;
+                if (item.checked) total += item.price;
                 return `
                     <div class="cart-item">
+                        <input type="checkbox" class="cart-item-checkbox" ${item.checked ? 'checked' : ''} onchange="toggleCartCheck(${index})">
                         <img src="${item.img}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100'">
                         <div class="cart-info">
                             <h4>${item.name}</h4>
                             <p>$${item.price}</p>
                         </div>
-                        <button onclick="removeFromCart(${index})" style="color: #ef4444; background: none; font-weight: bold;">✕</button>
+                        <button onclick="removeFromCart(${index})" style="color: #ef4444; background: none; font-weight: bold; font-size:16px;">✕</button>
                     </div>
                 `;
             }).join('');
@@ -1063,16 +1303,100 @@
 
         function removeFromCart(index) {
             cart.splice(index, 1);
-            document.getElementById('cart-count').innerText = cart.length;
+            saveState();
+            updateCartBadge();
             renderCart();
         }
 
         function checkout() {
-            if (cart.length === 0) return showToast('Keranjang kosong!');
-            alert('Pesanan berhasil dibuat! Terima kasih telah berbelanja di FindYourCam.');
+            if (cart.length === 0) return showToast('Keranjangmu masih kosong!');
+            
+            // simpan pesanan ke admin
+            const orders = JSON.parse(localStorage.getItem('CamOrders')) || [];
+            orders.push({
+                user: currentUser ? currentUser.username : 'customer',
+                total: document.getElementById('cart-total').innerText,
+                status: 'Paid'
+            });
+            localStorage.setItem('CamOrders', JSON.stringify(orders));
+
             cart = [];
-            document.getElementById('cart-count').innerText = '0';
+            saveState();
+            updateCartBadge();
+            showToast('Checkout Berhasil');
             switchView('home');
+        }
+
+        // ADMIN LOGIC
+        function renderAdmin() {
+            // Stats
+            document.getElementById('stat-total-items').innerText = products.length;
+            const totalStock = products.reduce((acc, curr) => acc + Number(curr.stock || 1), 0);
+            document.getElementById('stat-total-stock').innerText = totalStock;
+
+            const orders = JSON.parse(localStorage.getItem('CamOrders')) || [];
+            document.getElementById('stat-total-orders').innerText = orders.length;
+
+            // Items Table
+            const tbodyItems = document.getElementById('admin-items-tbody');
+            tbodyItems.innerHTML = products.map(p => `
+                <tr>
+                    <td>#${p.id}</td>
+                    <td>${p.name}</td>
+                    <td>$${p.price}</td>
+                    <td>${p.stock || 1}</td>
+                    <td><button onclick="adminDeleteProduct(${p.id})" style="color:#ef4444; background:none; font-weight:bold;">Hapus</button></td>
+                </tr>
+            `).join('');
+
+            // Orders Table
+            const tbodyOrders = document.getElementById('admin-orders-tbody');
+            if(orders.length > 0) {
+                tbodyOrders.innerHTML = orders.map(o => `
+                    <tr>
+                        <td>${o.user}</td>
+                        <td>${o.total}</td>
+                        <td><span style="color:#10b981; font-weight:bold;">${o.status}</span></td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        function adminAddProduct(event) {
+            event.preventDefault();
+            const name = document.getElementById('admin-p-name').value;
+            const price = Number(document.getElementById('admin-p-price').value);
+            const stock = Number(document.getElementById('admin-p-stock').value);
+            const category = document.getElementById('admin-p-cat').value;
+
+            const newProd = {
+                id: Date.now(),
+                name: name,
+                price: price,
+                oldPrice: price + 20,
+                discount: "NEW",
+                rating: "5.0",
+                category: category,
+                stock: stock,
+                img: "digicam1.jpg",
+                desc: "Newly added digicam item by Admin.",
+                reviews: []
+            };
+
+            products.push(newProd);
+            saveState();
+            renderProducts(products);
+            renderAdmin();
+            event.target.reset();
+            showToast('Barang baru berhasil ditambahkan!');
+        }
+
+        function adminDeleteProduct(id) {
+            products = products.filter(p => p.id !== id);
+            saveState();
+            renderProducts(products);
+            renderAdmin();
+            showToast('Barang berhasil dihapus!');
         }
 
         // TOAST SYSTEM
@@ -1083,11 +1407,26 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // INITIAL RENDER
+        // INIT APPLICATION
         window.onload = function() {
+            saveState();
             renderProducts(products);
+            updateCartBadge();
+
+            if (currentUser) {
+                document.getElementById('auth-overlay').style.display = 'none';
+                if (currentUser.role === 'admin') {
+                    document.body.classList.add('admin-mode');
+                    document.getElementById('main-header').style.display = 'none';
+                    document.getElementById('customer-nav').style.display = 'none';
+                    switchView('admin');
+                    renderAdmin();
+                } else {
+                    document.getElementById('user-display-name').innerText = currentUser.username;
+                    document.getElementById('user-display-email').innerText = currentUser.email;
+                }
+            }
         };
     </script>
-
 </body>
 </html>
