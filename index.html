@@ -1362,3 +1362,110 @@
     </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FindYourCam</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background: #ffffff;
+      max-width: 500px;
+      width: 100%;
+      padding: 40px 24px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #0d1321;
+      line-height: 1.2;
+      margin-bottom: 12px;
+      text-transform: capitalize;
+    }
+
+    p {
+      color: #6c757d;
+      font-size: 0.95rem;
+      margin-bottom: 28px;
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      padding: 14px 24px;
+      background-color: #0d1321;
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s ease, transform 0.1s ease;
+      /* Memastikan posisi z-index di atas elemen lain agar bisa diklik */
+      position: relative;
+      z-index: 10;
+    }
+
+    .btn-primary:hover {
+      background-color: #1e293b;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Welcome To Our Home, FindYourCam.</h1>
+    <p>Discover vintage digital cameras curated just for you.</p>
+    
+    <!-- Tombol Menggunakan Event Listener Native -->
+    <button id="getStartedBtn" class="btn-primary" type="button">
+      Get Started &rarr;
+    </button>
+  </div>
+
+  <script>
+    // Memastikan DOM telah selesai dimuat sebelum tombol diakses
+    document.addEventListener("DOMContentLoaded", function () {
+      const btn = document.getElementById("getStartedBtn");
+      
+      if (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          alert("Tombol berhasil diklik! Siap untuk tahap berikutnya.");
+          // Tambahkan navigasi Halaman atau fungsi lain di sini:
+          // window.location.href = "catalog.html";
+        });
+      }
+    });
+  </script>
+
+</body>
+</html>
