@@ -23,8 +23,8 @@
         body {
             background-color: #f8fafc;
             color: #1e293b;
-            padding-bottom: 70px; /* Space for Bottom Nav */
-            max-width: 480px; /* Mobile View limit */
+            padding-bottom: 70px;
+            max-width: 480px;
             margin: 0 auto;
             min-height: 100vh;
             position: relative;
@@ -213,6 +213,9 @@
             border-radius: 12px;
             margin-top: 10px;
             box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15);
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
         }
 
         .auth-switch {
@@ -321,6 +324,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            cursor: pointer;
         }
 
         .badge-discount {
@@ -621,49 +625,6 @@
             font-size: 13px;
             border-radius: 10px;
         }
-
-        /* --- ADMIN DASHBOARD --- */
-        .admin-nav {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 16px;
-            overflow-x: auto;
-        }
-
-        .admin-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: #ffffff;
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid #f1f5f9;
-            text-align: center;
-        }
-
-        .stat-card h5 { font-size: 10px; color: #64748b; text-transform: uppercase; }
-        .stat-card p { font-size: 16px; font-weight: 800; color: #0f172a; }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            font-size: 11px;
-        }
-
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        th { background: #f8fafc; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -682,8 +643,8 @@
         <!-- STEP 1: WELCOME -->
         <div id="auth-step-1">
             <h1 class="auth-title">Welcome To Our Home,<br>FindYourCam.</h1>
-            <p class="auth-subtitle">Discover vintage digitial cameras curated just for you.</p>
-            <button class="btn-primary" onclick="goToStep(2)">Get Started →</button>
+            <p class="auth-subtitle">Discover vintage digital cameras curated just for you.</p>
+            <button class="btn-primary" onclick="goToStep(2)">Get Started &rarr;</button>
         </div>
 
         <!-- STEP 2: LOGIN / REGISTER -->
@@ -714,7 +675,7 @@
     </div>
 
     <!-- VIEW 1: HOME (CUSTOMER) -->
-    <div id="view-home" class="view">
+    <div id="view-home" class="view active">
         <div class="intro-banner">
             <h2>Welcome, happy shopping, Camers! 📸</h2>
             <p>Find your aesthetic digicam below.</p>
@@ -732,143 +693,75 @@
             <button class="tab-btn" onclick="switchTab(this, 'promo')">Promo</button>
         </div>
 
-        <h3 class="section-title">Rekomendasi Untuk Digicam</h3>
+        <h3 class="section-title">Catalog Showcase</h3>
         <div class="product-grid" id="product-list">
-            <!-- Product Cards Rendered JS -->
+            <!-- Dynamic Render -->
         </div>
     </div>
 
     <!-- VIEW 2: PRODUCT DETAIL -->
     <div id="view-detail" class="view">
-        <div class="back-btn" onclick="showView('home')">← Back to Catalog</div>
-        <img id="detail-img" src="" class="detail-img" alt="Product">
-        <h2 id="detail-title" class="detail-title"></h2>
-        <div class="detail-price-box">
-            <span id="detail-price" class="detail-price"></span>
-            <span id="detail-price-old" class="price-old"></span>
-        </div>
-        <p id="detail-desc" class="detail-desc"></p>
-
-        <div class="action-group">
-            <button class="btn-cart" onclick="addToCartCurrentDetail()">+ Add To Cart</button>
-            <button class="btn-direct-buy" onclick="buyNowCurrentDetail()">🛒 Buy Now</button>
-        </div>
-
-        <div class="reviews-container">
-            <h3 class="section-title">Customer Reviews</h3>
-            <div id="reviews-list">
-                <!-- Reviews rendered via JS -->
-            </div>
-        </div>
+        <div class="back-btn" onclick="switchView('home')">&larr; Back to Catalog</div>
+        <div id="detail-content"></div>
     </div>
 
     <!-- VIEW 3: CART -->
     <div id="view-cart" class="view">
-        <h3 class="section-title">Shopping Cart</h3>
-        <div id="cart-items-container">
-            <!-- Cart items JS -->
-        </div>
-
+        <h3 class="section-title">Your Cart 🛒</h3>
+        <div id="cart-list"></div>
         <div class="cart-summary">
             <div class="summary-row">
-                <span>Total Items</span>
-                <span id="summary-count">0 items</span>
+                <span>Subtotal</span>
+                <span id="cart-subtotal">$0</span>
             </div>
             <div class="summary-row total">
-                <span>Subtotal</span>
-                <span id="summary-total">$0</span>
+                <span>Total Payment</span>
+                <span id="cart-total">$0</span>
             </div>
-            <button class="btn-primary" style="margin-top: 15px;" onclick="checkout()">Bayar Sekarang</button>
+            <button class="btn-primary" onclick="checkout()">Checkout Now</button>
         </div>
     </div>
 
     <!-- VIEW 4: PROFILE -->
     <div id="view-profile" class="view">
         <div class="profile-card">
-            <!-- 
-                ARAHAN FOTO AVATAR PROFIL USER CUSTOMER:
-                Ganti src di bawah ini dengan foto profil milikmu. Contoh: src="avatar-customer.jpg" 
-            -->
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="profile-avatar" alt="Profile">
-            <h3 class="profile-name" id="profile-username-display">customer</h3>
-            <p class="profile-email" id="profile-email-display">customeremail.com</p>
-            <span class="badge-vip" id="profile-badge">VIP Member</span>
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100" class="profile-avatar" alt="User">
+            <h3 class="profile-name" id="user-display-name">Camera Enthusiast</h3>
+            <p class="profile-email">camers@findyourcam.com</p>
+            <span class="badge-vip">MEMBER VIP</span>
         </div>
 
-        <h3 class="section-title">Pesanan Saya</h3>
         <div class="order-status-grid">
-            <div>🕒<br>Belum Bayar</div>
-            <div>📦<br>Dikemas</div>
-            <div>🚚<br>Dikirim</div>
-            <div>⭐<br>Beri Penilaian</div>
+            <div>📦<br>Pending</div>
+            <div>🚚<br>Shipped</div>
+            <div>✨<br>Completed</div>
+            <div>💬<br>Reviews</div>
         </div>
 
-        <button class="btn-logout" onclick="logout()">Keluar Account</button>
+        <button class="btn-logout" onclick="logout()">Logout Account</button>
     </div>
 
-    <!-- VIEW 5: ADMIN DASHBOARD -->
-    <div id="view-admin" class="view">
-        <h3 class="section-title">Admin Management</h3>
-        
-        <div class="admin-stats">
-            <div class="stat-card">
-                <h5>Total Barang</h5>
-                <p id="stat-total-items">0</p>
-            </div>
-            <div class="stat-card">
-                <h5>Total Stok</h5>
-                <p id="stat-total-stock">0</p>
-            </div>
-            <div class="stat-card">
-                <h5>Pesanan</h5>
-                <p id="stat-total-orders">0</p>
-            </div>
-        </div>
-
-        <div class="section-title">Input Barang Baru</div>
-        <form id="admin-add-form" onsubmit="handleAddProduct(event)" style="background: #fff; padding: 12px; border-radius: 12px; margin-bottom: 20px;">
-            <div class="form-group"><input type="text" id="adm-name" class="form-control" placeholder="Nama Camera" required></div>
-            <div class="form-group"><input type="number" id="adm-price" class="form-control" placeholder="Harga ($)" required></div>
-            <div class="form-group"><input type="number" id="adm-stock" class="form-control" placeholder="Stok" required></div>
-            <div class="form-group"><input type="text" id="adm-cat" class="form-control" placeholder="Kategori" required></div>
-            <button type="submit" class="btn-primary">Tambah Barang</button>
-        </form>
-
-        <div class="section-title">Data Barang</div>
-        <table id="admin-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nama</th>
-                    <th>Harga</th>
-                    <th>Stok</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-
-    <!-- BOTTOM NAVIGATION BAR -->
-    <div class="bottom-nav" id="bottom-nav">
-        <div class="nav-item active" onclick="showView('home')">
+    <!-- BOTTOM NAVIGATION -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchView('home')">
             <span class="icon">🏠</span>
             <span>Home</span>
         </div>
-        <div class="nav-item" onclick="showView('cart')">
+        <div class="nav-item" onclick="switchView('cart')">
             <span class="icon">🛒</span>
-            <span>Keranjang</span>
-            <span class="cart-badge" id="cart-badge-count">0</span>
+            <span>Cart</span>
+            <span class="cart-badge" id="cart-count">0</span>
         </div>
-        <div class="nav-item" onclick="showView('profile')">
+        <div class="nav-item" onclick="switchView('profile')">
             <span class="icon">👤</span>
-            <span>Akun</span>
+            <span>Profile</span>
         </div>
     </div>
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        /* --- 1. DATA INITIALIZATION (LOCALSTORAGE) --- */
-        const defaultProducts = [
+        // DATA PRODUK DENGAN LINK AVATAR LENGKAP
+        const products = [
             {
                 id: 1,
                 name: "Canon IXY Digital 930 IS",
@@ -877,24 +770,21 @@
                 discount: "15% OFF",
                 rating: "4.9",
                 category: "ready",
-                img: "digicam1.jpg,"
+                img: "digicam1.jpg",
                 desc: "Classic compact digicam with rich color science. Perfect for vintage aesthetic film-like photography.",
                 reviews: [
                     {
                         username: "cherries",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 1 disini -> cherries.jpg */
                         avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100", 
                         text: "such a beautiful cam... aaa I didn't expect the digicam output to be this good! retro vibe totally nailed! ✨"
                     },
                     {
                         username: "Arven Thoories",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 2 disini -> Arven.jpg */
                         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100", 
                         text: "I think all the Digicams here are great. High technical fidelity and crisp output for a vintage model. Much obliged."
                     },
                     {
                         username: "cacichu",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 3 disini -> cacichu.jpg */
                         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100", 
                         text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! 💖"
                     }
@@ -913,22 +803,19 @@
                 reviews: [
                     {
                         username: "Anderson.",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 4 disini -> anderson.jpg */
                         avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
                         text: "Clean sharpness, surprisingly deep color rendering. A solid addition to my kit."
                     },
                     {
                         username: "Isaiah Journey",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 5 disini -> isaiah.jpg */
                         avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
                         text: "The night flash pictures look so moody and cool!! Love it sm <3"
                     },
                     {
                         username: "George Soujhr",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 6 disini -> george.jpg */
                         avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100",
-                        text: " I bought this cams for my girlfriend, didn't expect she's so like it. Fast delivery, camera arrived in pristine mint condition. Operates smoothly.
-                    , thankyou FindYourCam."
+                        text: "I bought this cams for my girlfriend, didn't expect she's so like it. Fast delivery, camera arrived in pristine mint condition. Operates smoothly, thankyou FindYourCam."
+                    }
                 ]
             },
             {
@@ -944,19 +831,16 @@
                 reviews: [
                     {
                         username: "maureen vseih",
-                        /* ARAHAN FOTO AVATAR: maureen.jpg */
                         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
                         text: "PINK PINK PINK! 🌸 Absolute perfection! I'm screaming because of how adorable this camera is!"
                     },
                     {
                         username: "belleyourfagorite",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 1 */
                         avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
                         text: "The tone is naturally warm and dreamy! No editing needed at all!"
                     },
                     {
                         username: "Parker",
-                        /* ARAHAN FOTO AVATAR: zeon.jpg */
                         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
                         text: "Surprisingly rugged build despite the bright aesthetic color scheme. Excellent shutter response."
                     }
@@ -975,19 +859,16 @@
                 reviews: [
                     {
                         username: "Soren",
-                        /* ARAHAN FOTO AVATAR: soren.jpg*/
                         avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
                         text: "Reliable ergonomics. Compact enough for daily pocket carry without sacrificing optical clarity."
                     },
                     {
                         username: "Velix 4sho",
-                        /* ARAHAN FOTO AVATAR: masukkan foto avatar 4 */
                         avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
                         text: "Great vintage look. Really good value for money."
                     },
                     {
                         username: "mills",
-                        /* ARAHAN FOTO AVATAR: cami.jpg*/
                         avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100",
                         text: "Gives that iconic Y2K celebrity photo look! obsessed!"
                     }
@@ -1006,466 +887,207 @@
                 reviews: [
                     {
                         username: "zeell",
-                        /* ARAHAN FOTO AVATAR: zella.jpg*/
                         avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
                         text: "Took this to concert and results were immaculate! 1000/10!"
                     },
                     {
                         username: "KAAALILAAAA",
-                        /* ARAHAN FOTO AVATAR: kalila.jpg*/
                         avatar: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100",
                         text: "Solid construction, dynamic range is remarkable for its era."
                     },
                     {
                         username: "kimi22",
-                        /* ARAHAN FOTO AVATAR: kimi.jpg */
                         avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100",
                         text: "Super cute and easy to use! Buttons are smooth!"
                     }
                 ]
-            },
-            {
-                
+            }
         ];
 
-        // Init LocalStorage Data
-        if (!localStorage.getItem('barang')) {
-            localStorage.setItem('barang', JSON.stringify(defaultProducts));
-        }
-        if (!localStorage.getItem('FindYourCamCart')) {
-            localStorage.setItem('FindYourCamCart', JSON.stringify([]));
-        }
+        let cart = [];
+        let isRegisterMode = false;
 
-        let currentDetailProduct = null;
-        let isRegisteringMode = false;
-
-        /* --- 2. AUTHENTICATION & ONBOARDING --- */
+        // ONBOARDING & AUTHENTICATION
         function goToStep(step) {
-            if(step === 2) {
+            if (step === 2) {
                 document.getElementById('auth-step-1').style.display = 'none';
                 document.getElementById('auth-step-2').style.display = 'block';
             }
         }
 
         function toggleAuthMode() {
-            isRegisteringMode = !isRegisteringMode;
-            const title = document.getElementById('auth-form-title');
-            const sub = document.getElementById('auth-form-sub');
-            const emailGrp = document.getElementById('email-group');
-            const toggleText = document.getElementById('auth-toggle-text');
-            const btn = document.getElementById('auth-submit-btn');
-
-            if(isRegisteringMode) {
-                title.innerText = "Mari Buat Akun";
-                sub.innerText = "Register to start shopping Digicams";
-                emailGrp.style.display = "block";
-                btn.innerText = "Daftar Akun";
-                toggleText.innerText = "Sudah punya akun? Login.";
-            } else {
-                title.innerText = "Login Account";
-                sub.innerText = "Sign in to start exploring catalog";
-                emailGrp.style.display = "none";
-                btn.innerText = "Login";
-                toggleText.innerText = "Belum buat akun? Mari buat.";
-            }
+            isRegisterMode = !isRegisterMode;
+            document.getElementById('email-group').style.display = isRegisterMode ? 'block' : 'none';
+            document.getElementById('auth-form-title').innerText = isRegisterMode ? 'Register Account' : 'Login Account';
+            document.getElementById('auth-submit-btn').innerText = isRegisterMode ? 'Register' : 'Login';
+            document.getElementById('auth-toggle-text').innerText = isRegisterMode ? 'Sudah punya akun? Login' : 'Belum buat akun? Mari buat.';
         }
 
-        function handleAuth(e) {
-            e.preventDefault();
-            const u = document.getElementById('auth-username').value.trim();
-            const p = document.getElementById('auth-password').value.trim();
-            const email = document.getElementById('auth-email').value.trim() || u + "@mail.com";
-
-            if (!u || !p) return;
-
-            if(isRegisteringMode) {
-                // Save new customer account
-                const userObj = { username: u, email: email, role: 'customer' };
-                localStorage.setItem('CamUser', JSON.stringify(userObj));
-                showToast("Akun Berhasil Dibuat!");
-                enterApp(userObj);
-            } else {
-                // Default customer check
-                if(u === "customer" && p === "123") {
-                    const userObj = { username: "customer", email: "customeremail.com", role: "customer" };
-                    localStorage.setItem('CamUser', JSON.stringify(userObj));
-                    showToast("Login Berhasil!");
-                    enterApp(userObj);
-                } 
-                // Any other username input acts as Custom Admin / User depending on password logic requested
-                else {
-                    // Check if Admin or generic customer login
-                    const role = (p === "admin123" || u.toLowerCase() === "eve") ? "admin" : "customer";
-                    const userObj = { username: u, email: email, role: role };
-                    localStorage.setItem('CamUser', JSON.stringify(userObj));
-                    showToast("Welcome " + u + "!");
-                    enterApp(userObj);
-                }
-            }
-        }
-
-        function enterApp(user) {
+        function handleAuth(event) {
+            event.preventDefault();
+            const username = document.getElementById('auth-username').value;
+            document.getElementById('user-display-name').innerText = username || 'Camera Enthusiast';
             document.getElementById('auth-overlay').style.display = 'none';
-            if(user.role === 'admin') {
-                document.getElementById('bottom-nav').style.display = 'none';
-                showView('admin');
-                renderAdminView();
-            } else {
-                document.getElementById('bottom-nav').style.display = 'flex';
-                document.getElementById('profile-username-display').innerText = user.username;
-                document.getElementById('profile-email-display').innerText = user.email;
-                showView('home');
-            }
-            updateCartBadge();
-            renderProducts();
+            showToast('Selamat datang, ' + username + '!');
         }
 
         function logout() {
-            localStorage.removeItem('CamUser');
             document.getElementById('auth-overlay').style.display = 'flex';
             document.getElementById('auth-step-1').style.display = 'block';
             document.getElementById('auth-step-2').style.display = 'none';
-            showToast("Berhasil Keluar");
         }
 
-        /* --- 3. NAVIGATION & UI VIEWS --- */
-        function showView(viewName) {
+        // VIEW NAVIGATION
+        function switchView(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-            const targetView = document.getElementById(`view-${viewName}`);
-            if(targetView) targetView.classList.add('active');
-
-            // Bottom Nav Active styling
-            if(viewName === 'home') document.querySelectorAll('.nav-item')[0].classList.add('active');
-            if(viewName === 'cart') {
-                document.querySelectorAll('.nav-item')[1].classList.add('active');
-                renderCart();
-            }
-            if(viewName === 'profile') document.querySelectorAll('.nav-item')[2].classList.add('active');
+            document.getElementById(`view-${viewName}`).classList.add('active');
             
-            window.scrollTo(0,0);
+            // Highlight active bottom tab
+            const navIndex = viewName === 'home' ? 0 : viewName === 'cart' ? 1 : 2;
+            document.querySelectorAll('.nav-item')[navIndex].classList.add('active');
+
+            if (viewName === 'cart') renderCart();
         }
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-text').innerText = msg;
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 2500);
-        }
-
-        /* --- 4. CATALOG & PRODUCTS --- */
-        function renderProducts(filterCategory = 'all', searchQuery = '') {
-            const products = JSON.parse(localStorage.getItem('barang')) || [];
+        // RENDER PRODUCTS
+        function renderProducts(items) {
             const container = document.getElementById('product-list');
-            container.innerHTML = '';
-
-            let filtered = products;
-            if(filterCategory !== 'all') {
-                filtered = filtered.filter(p => p.category === filterCategory);
-            }
-            if(searchQuery) {
-                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery.toLowerCase()));
-            }
-
-            filtered.forEach(p => {
-                container.innerHTML += `
-                    <div class="product-card">
-                        <span class="badge-discount">${p.discount}</span>
-                        <img src="${p.img}" class="product-img" onclick="openDetail(${p.id})">
-                        <div class="product-name" onclick="openDetail(${p.id})">${p.name}</div>
-                        <div class="price-container">
-                            <span class="price-current">$${p.price}</span>
-                            <span class="price-old">$${p.oldPrice}</span>
-                        </div>
-                        <div class="rating">★ ${p.rating}</div>
-                        <button class="btn-buy" onclick="addToCart(${p.id})">🛒 Beli Sekarang</button>
+            container.innerHTML = items.map(p => `
+                <div class="product-card" onclick="openDetail(${p.id})">
+                    <span class="badge-discount">${p.discount}</span>
+                    <img src="${p.img}" class="product-img" alt="${p.name}" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300'">
+                    <div class="product-name">${p.name}</div>
+                    <div class="price-container">
+                        <span class="price-current">$${p.price}</span>
+                        <span class="price-old">$${p.oldPrice}</span>
                     </div>
-                `;
-            });
-        }
-
-        function switchTab(btn, cat) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderProducts(cat);
-        }
-
-        function filterProducts(q) {
-            renderProducts('all', q);
+                    <div class="rating">⭐ ${p.rating}</div>
+                    <button class="btn-buy" onclick="event.stopPropagation(); addToCart(${p.id})">+ Add to Cart</button>
+                </div>
+            `).join('');
         }
 
         function openDetail(id) {
-            const products = JSON.parse(localStorage.getItem('barang')) || [];
-            currentDetailProduct = products.find(p => p.id === id);
-            if(!currentDetailProduct) return;
+            const product = products.find(p => p.id === id);
+            const container = document.getElementById('detail-content');
+            
+            container.innerHTML = `
+                <img src="${product.img}" class="detail-img" alt="${product.name}" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500'">
+                <h2 class="detail-title">${product.name}</h2>
+                <div class="detail-price-box">
+                    <span class="detail-price">$${product.price}</span>
+                    <span class="price-old">$${product.oldPrice}</span>
+                    <span class="badge-discount">${product.discount}</span>
+                </div>
+                <p class="detail-desc">${product.desc}</p>
+                
+                <div class="action-group">
+                    <button class="btn-cart" onclick="addToCart(${product.id})">Add to Cart</button>
+                    <button class="btn-direct-buy" onclick="addToCart(${product.id}); switchView('cart');">Buy Now</button>
+                </div>
 
-            document.getElementById('detail-img').src = currentDetailProduct.img;
-            document.getElementById('detail-title').innerText = currentDetailProduct.name;
-            document.getElementById('detail-price').innerText = `$${currentDetailProduct.price}`;
-            document.getElementById('detail-price-old').innerText = `$${currentDetailProduct.oldPrice}`;
-            document.getElementById('detail-desc').innerText = currentDetailProduct.desc;
-
-            // Render Reviews
-            const revContainer = document.getElementById('reviews-list');
-            revContainer.innerHTML = '';
-            currentDetailProduct.reviews.forEach(r => {
-                revContainer.innerHTML += `
-                    <div class="review-card">
-                        <div class="review-header">
-                            <img src="${r.avatar}" class="avatar">
-                            <div class="user-info">
-                                <div class="username">${r.username}</div>
-                                <div class="stars">★★★★★</div>
+                <div class="reviews-container">
+                    <h4 style="margin-bottom: 12px; font-size: 14px;">Customer Reviews (${product.reviews.length})</h4>
+                    ${product.reviews.map(r => `
+                        <div class="review-card">
+                            <div class="review-header">
+                                <img src="${r.avatar}" class="avatar" alt="${r.username}">
+                                <div class="user-info">
+                                    <div class="username">${r.username}</div>
+                                    <div class="stars">⭐⭐⭐⭐⭐</div>
+                                </div>
                             </div>
+                            <div class="review-text">${r.text}</div>
                         </div>
-                        <div class="review-text">${r.text}</div>
-                    </div>
-                `;
-            });
-
-            showView('detail');
+                    `).join('')}
+                </div>
+            `;
+            switchView('detail');
         }
 
-        /* --- 5. CART & CHECKOUT --- */
-        function addToCart(id) {
-            const products = JSON.parse(localStorage.getItem('barang')) || [];
-            const item = products.find(p => p.id === id);
-            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
+        // TABS & FILTERING
+        function switchTab(btn, category) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-            cart.push(item);
-            localStorage.setItem('FindYourCamCart', JSON.stringify(cart));
-            updateCartBadge();
-            showToast("Ditambahkan ke Keranjang!");
-        }
-
-        function addToCartCurrentDetail() {
-            if(currentDetailProduct) addToCart(currentDetailProduct.id);
-        }
-
-        function buyNowCurrentDetail() {
-            if(currentDetailProduct) {
-                addToCart(currentDetailProduct.id);
-                showView('cart');
+            if (category === 'all') {
+                renderProducts(products);
+            } else {
+                const filtered = products.filter(p => p.category === category);
+                renderProducts(filtered);
             }
         }
 
-        function updateCartBadge() {
-            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
-            document.getElementById('cart-badge-count').innerText = cart.length;
+        function filterProducts(keyword) {
+            const filtered = products.filter(p => p.name.toLowerCase().includes(keyword.toLowerCase()));
+            renderProducts(filtered);
+        }
+
+        // CART LOGIC
+        function addToCart(id) {
+            const item = products.find(p => p.id === id);
+            cart.push(item);
+            document.getElementById('cart-count').innerText = cart.length;
+            showToast('Kamera berhasil masuk keranjang!');
         }
 
         function renderCart() {
-            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
-            const container = document.getElementById('cart-items-container');
-            container.innerHTML = '';
-
-            if(cart.length === 0) {
-                container.innerHTML = `<p style="text-align:center; color:#94a3b8; margin: 30px 0;">Keranjang kamu kosong.</p>`;
-                document.getElementById('summary-count').innerText = '0 items';
-                document.getElementById('summary-total').innerText = '$0';
+            const container = document.getElementById('cart-list');
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">Keranjangmu masih kosong.</p>';
+                document.getElementById('cart-subtotal').innerText = '$0';
+                document.getElementById('cart-total').innerText = '$0';
                 return;
             }
 
-            let subtotal = 0;
-            cart.forEach((item, idx) => {
-                subtotal += item.price;
-                container.innerHTML += `
+            let total = 0;
+            container.innerHTML = cart.map((item, index) => {
+                total += item.price;
+                return `
                     <div class="cart-item">
-                        <img src="${item.img}">
+                        <img src="${item.img}" alt="${item.name}" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100'">
                         <div class="cart-info">
                             <h4>${item.name}</h4>
                             <p>$${item.price}</p>
                         </div>
-                        <button onclick="removeFromCart(${idx})" style="background:none; color:#ef4444; font-weight:bold;">✕</button>
+                        <button onclick="removeFromCart(${index})" style="color: #ef4444; background: none; font-weight: bold;">✕</button>
                     </div>
                 `;
-            });
+            }).join('');
 
-            document.getElementById('summary-count').innerText = `${cart.length} items`;
-            document.getElementById('summary-total').innerText = `$${subtotal}`;
+            document.getElementById('cart-subtotal').innerText = `$${total}`;
+            document.getElementById('cart-total').innerText = `$${total}`;
         }
 
         function removeFromCart(index) {
-            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
             cart.splice(index, 1);
-            localStorage.setItem('FindYourCamCart', JSON.stringify(cart));
+            document.getElementById('cart-count').innerText = cart.length;
             renderCart();
-            updateCartBadge();
         }
 
         function checkout() {
-            let cart = JSON.parse(localStorage.getItem('FindYourCamCart')) || [];
-            if(cart.length === 0) return showToast("Keranjang masih kosong!");
-
-            localStorage.setItem('FindYourCamCart', JSON.stringify([]));
-            updateCartBadge();
-            renderCart();
-            showToast("Checkout Berhasil!");
+            if (cart.length === 0) return showToast('Keranjang kosong!');
+            alert('Pesanan berhasil dibuat! Terima kasih telah berbelanja di FindYourCam.');
+            cart = [];
+            document.getElementById('cart-count').innerText = '0';
+            switchView('home');
         }
 
-        /* --- 6. ADMIN DASHBOARD LOGIC --- */
-        function renderAdminView() {
-            const products = JSON.parse(localStorage.getItem('barang')) || [];
-            document.getElementById('stat-total-items').innerText = products.length;
-            document.getElementById('stat-total-stock').innerText = products.length * 5; // Dummy Stock calculation
-            document.getElementById('stat-total-orders').innerText = "12";
-
-            const tbody = document.querySelector('#admin-table tbody');
-            tbody.innerHTML = '';
-            products.forEach(p => {
-                tbody.innerHTML += `
-                    <tr>
-                        <td>#${p.id}</td>
-                        <td>${p.name}</td>
-                        <td>$${p.price}</td>
-                        <td>In Stock</td>
-                    </tr>
-                `;
-            });
+        // TOAST SYSTEM
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-text').innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        function handleAddProduct(e) {
-            e.preventDefault();
-            const name = document.getElementById('adm-name').value;
-            const price = parseInt(document.getElementById('adm-price').value);
-            const cat = document.getElementById('adm-cat').value;
-
-            let products = JSON.parse(localStorage.getItem('barang')) || [];
-            const newProd = {
-                id: Date.now(),
-                name: name,
-                price: price,
-                oldPrice: price + 20,
-                discount: "NEW",
-                rating: "5.0",
-                category: cat || "ready",
-                img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500",
-                desc: "New camera added by admin.",
-                reviews: []
-            };
-
-            products.push(newProd);
-            localStorage.setItem('barang', JSON.stringify(products));
-            showToast("Barang Berhasil Ditambah!");
-            renderAdminView();
-            e.target.reset();
-        }
-
-        // Auto Login Check on Startup
+        // INITIAL RENDER
         window.onload = function() {
-            const savedUser = JSON.parse(localStorage.getItem('CamUser'));
-            if(savedUser) {
-                enterApp(savedUser);
-            }
+            renderProducts(products);
         };
     </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FindYourCam</title>
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: system-ui, -apple-system, sans-serif;
-    }
-
-    body {
-      background-color: #f8f9fa;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-    }
-
-    .card {
-      background: #ffffff;
-      max-width: 500px;
-      width: 100%;
-      padding: 40px 24px;
-      border-radius: 16px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    h1 {
-      font-size: 2rem;
-      font-weight: 900;
-      color: #0d1321;
-      line-height: 1.2;
-      margin-bottom: 12px;
-      text-transform: capitalize;
-    }
-
-    p {
-      color: #6c757d;
-      font-size: 0.95rem;
-      margin-bottom: 28px;
-    }
-
-    .btn-primary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      padding: 14px 24px;
-      background-color: #0d1321;
-      color: #ffffff;
-      font-size: 1rem;
-      font-weight: 600;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      text-decoration: none;
-      transition: background-color 0.2s ease, transform 0.1s ease;
-      /* Memastikan posisi z-index di atas elemen lain agar bisa diklik */
-      position: relative;
-      z-index: 10;
-    }
-
-    .btn-primary:hover {
-      background-color: #1e293b;
-    }
-
-    .btn-primary:active {
-      transform: scale(0.98);
-    }
-  </style>
-</head>
-<body>
-
-  <div class="card">
-    <h1>Welcome To Our Home, FindYourCam.</h1>
-    <p>Discover vintage digital cameras curated just for you.</p>
-    
-    <!-- Tombol Menggunakan Event Listener Native -->
-    <button id="getStartedBtn" class="btn-primary" type="button">
-      Get Started &rarr;
-    </button>
-  </div>
-
-  <script>
-    // Memastikan DOM telah selesai dimuat sebelum tombol diakses
-    document.addEventListener("DOMContentLoaded", function () {
-      const btn = document.getElementById("getStartedBtn");
-      
-      if (btn) {
-        btn.addEventListener("click", function (e) {
-          e.preventDefault();
-          alert("Tombol berhasil diklik! Siap untuk tahap berikutnya.");
-          // Tambahkan navigasi Halaman atau fungsi lain di sini:
-          // window.location.href = "catalog.html";
-        });
-      }
-    });
-  </script>
 
 </body>
 </html>
