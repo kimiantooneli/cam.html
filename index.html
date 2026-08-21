@@ -1,662 +1,550 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FindYourCam - Digital Camera Store</title>
+    <title>FindYourCam.</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: #f8fafc; color: #0f172a; padding-bottom: 80px; }
+        button { cursor: pointer; border: none; font-family: inherit; transition: 0.2s; }
+        input, select, textarea { width: 100%; font-family: inherit; outline: none; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; font-size: 13px; background: #fff; margin-bottom: 10px; }
         
-        /* LIGHT THEME (WHITE / LIGHT GRAY) */
-        body { background-color: #f8fafc; color: #0f172a; min-height: 100vh; padding-bottom: 60px; }
-        button { cursor: pointer; border: none; outline: none; font-family: inherit; transition: all 0.2s; }
-        input, select, textarea { font-family: inherit; outline: none; border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; }
+        header { background: #fff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 90; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .brand { font-size: 22px; font-weight: 800; }
+        .container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
 
-        /* HEADER & CONTAINER */
-        header { background: #ffffff; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 90; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .brand { font-size: 20px; font-weight: 800; color: #0284c7; }
-        .container { max-width: 1100px; margin: 0 auto; padding: 20px; }
+        /* BANNER & TRACKING */
+        .hero-banner { background: #0f172a; color: white; border-radius: 20px; padding: 20px; margin: 12px 0; }
+        .hero-banner h1 { font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+        .track-box { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; margin-bottom: 16px; }
 
-        /* AUTH MODAL & OVERLAY */
-        .auth-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .auth-card { background: #ffffff; width: 100%; max-width: 400px; border-radius: 16px; padding: 24px; border: 1px solid #e2e8f0; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1); }
-        .auth-tabs { display: flex; border-bottom: 2px solid #e2e8f0; margin-bottom: 20px; }
-        .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 14px; color: #64748b; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; }
-        .auth-tab.active { color: #0284c7; border-bottom-color: #0284c7; }
-        
-        .form-group { margin-bottom: 16px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; color: #475569; margin-bottom: 6px; }
-        .form-control { width: 100%; background: #f8fafc; color: #0f172a; font-size: 13px; }
-        .form-control:focus { border-color: #0284c7; background: #fff; }
-        .btn-auth { width: 100%; padding: 12px; background: #0284c7; color: white; font-weight: 700; border-radius: 8px; margin-top: 10px; }
-        .btn-auth:hover { background: #0369a1; }
-        .auth-switch { text-align: center; font-size: 12px; color: #64748b; margin-top: 16px; }
-        .auth-switch span { color: #0284c7; text-decoration: underline; cursor: pointer; font-weight: 600; }
+        /* SEARCH & PILLS */
+        .search-box input { border-radius: 25px; padding-left: 36px; }
+        .filter-pills { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 16px; scrollbar-width: none; }
+        .pill { padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; background: #fff; border: 1px solid #e2e8f0; white-space: nowrap; }
+        .pill.active { background: #0f172a; color: #fff; }
 
-        /* TRACK MY ORDER BANNER */
-        .track-banner { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .btn-track { background: #0284c7; color: white; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 12px; }
+        /* GRID PRODUCT */
+        .grid-products { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .card-product { background: #fff; border-radius: 16px; padding: 12px; position: relative; border: 1px solid #f1f5f9; display: flex; flex-direction: column; justify-content: space-between; }
+        .badge-discount { position: absolute; top: 16px; left: 16px; background: #ef4444; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; }
+        .product-img { width: 100%; height: 120px; object-fit: contain; margin-bottom: 8px; }
 
-        /* CATALOG GRID */
-        .catalog-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #0f172a; }
-        .grid-products { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
-        .card-product { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .product-img { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; background: #f1f5f9; margin-bottom: 10px; }
-        .product-name { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
-        .product-price { font-size: 15px; font-weight: 800; color: #0284c7; }
-        .product-desc { font-size: 11px; color: #64748b; margin-bottom: 12px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .btn-buy-card { width: 100%; padding: 8px; background: #16a34a; color: white; font-weight: 700; font-size: 12px; border-radius: 6px; margin-top: 6px; }
+        /* ADMIN & FORMS */
+        .admin-nav { display: flex; gap: 6px; overflow-x: auto; margin-bottom: 14px; scrollbar-width: none; }
+        .admin-nav-btn { padding: 6px 12px; font-size: 11px; font-weight: 700; border-radius: 8px; background: #e2e8f0; color: #334155; white-space: nowrap; }
+        .admin-nav-btn.active { background: #0f172a; color: #fff; }
+        .card-box { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid #e2e8f0; margin-bottom: 14px; }
 
-        /* REVIEWS LIST IN MODAL */
-        .review-item { display: flex; gap: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 8px; align-items: flex-start; }
-        .review-avatar { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; background: #cbd5e1; flex-shrink: 0; }
-        .review-user { font-size: 12px; font-weight: 700; color: #0f172a; }
-        .review-text { font-size: 11px; color: #475569; margin-top: 2px; }
+        /* BOTTOM NAV */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-around; padding: 10px 0; max-width: 480px; margin: 0 auto; z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; font-size: 10px; color: #64748b; cursor: pointer; }
+        .nav-item.active { color: #0284c7; font-weight: 700; }
 
-        /* MODAL COMMON */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(2px); z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px; }
-        .modal-card { background: #ffffff; width: 100%; max-width: 450px; border-radius: 16px; padding: 20px; border: 1px solid #e2e8f0; position: relative; max-height: 85vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1); }
-        .modal-close { position: absolute; right: 16px; top: 16px; color: #64748b; font-size: 20px; cursor: pointer; font-weight: bold; }
-        .selected-prod-box { background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #e2e8f0; }
-
-        /* ADMIN LAYOUT */
-        .admin-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        @media (max-width: 768px) { .admin-layout { grid-template-columns: 1fr; } }
-        .admin-panel { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; }
-        
-        table { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 10px; }
-        th, td { padding: 8px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-        th { color: #0284c7; font-weight: 700; }
-        .badge-new { background: #ef4444; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; font-weight: 700; margin-left: 6px; }
-        .btn-update { background: #0284c7; color: #ffffff; font-size: 10px; padding: 4px 8px; font-weight: 700; border-radius: 4px; }
-        .btn-edit { background: #eab308; color: #ffffff; font-size: 11px; padding: 6px 12px; font-weight: 700; border-radius: 6px; width: 48%; }
-        .btn-delete { background: #ef4444; color: white; font-size: 11px; padding: 6px 12px; font-weight: 700; border-radius: 6px; width: 48%; }
+        .btn-primary { width: 100%; padding: 10px; background: #0f172a; color: white; font-weight: 700; border-radius: 8px; font-size: 12px; }
+        .btn-danger { background: #ef4444; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+        .btn-warning { background: #f59e0b; color: white; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th, td { padding: 8px 4px; text-align: left; border-bottom: 1px solid #f1f5f9; }
     </style>
 </head>
 <body>
 
     <header>
         <div class="brand">FindYourCam.</div>
-        <div id="user-info" style="font-size: 12px; color: #64748b;">
-            Logged in as: <b id="lbl-username" style="color:#0f172a;">-</b> 
-            <button onclick="logout()" style="background:#ef4444; color:#fff; padding:4px 8px; border-radius:4px; font-size:10px; margin-left:8px;">Logout</button>
-        </div>
+        <div>📸</div>
     </header>
 
-    <!-- INITIAL AUTH OVERLAY (LOGIN / REGISTER) -->
-    <div class="auth-overlay" id="auth-overlay">
-        <div class="auth-card">
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="tab-cust" onclick="switchAuthTab('customer')">User</div>
-                <div class="auth-tab" id="tab-admin" onclick="switchAuthTab('admin')">Admin</div>
+    <div class="container">
+        <!-- TAB HOME -->
+        <div id="tab-home">
+            <div class="hero-banner">
+                <h1>Welcome, happy shopping, Camers! 📸</h1>
+                <p style="font-size: 12px; color: #94a3b8;">Find your aesthetic vintage digicam below.</p>
             </div>
 
-            <form onsubmit="handleAuth(event)">
-                <div class="form-group">
-                    <label id="lbl-input-user">User Username</label>
-                    <input type="text" id="auth-username" class="form-control" placeholder="Enter username" required>
-                </div>
-                <div class="form-group">
-                    <label id="lbl-input-pass">Password</label>
-                    <input type="password" id="auth-password" class="form-control" placeholder="Enter password" required>
-                </div>
-                <button type="submit" class="btn-auth" id="btn-submit-auth">Log in as User</button>
-            </form>
-
-            <div class="auth-switch">
-                Don't have an account? <span onclick="alert('Please enter your new username & password to log in directly!')">Create Account</span>
+            <!-- TRACK MY ORDER -->
+            <div class="track-box">
+                <div style="font-size: 12px; font-weight: 800; margin-bottom: 6px;">🔍 Track My Order</div>
+                <input type="text" id="track-input" placeholder="Masukkan Nama Pembeli untuk lacak..." style="margin-bottom: 6px;">
+                <button class="btn-primary" onclick="trackOrder()" style="padding: 6px;">Lacak Pesanan</button>
+                <div id="track-result" style="font-size: 12px; font-weight: 700; color: #0284c7; margin-top: 8px;"></div>
             </div>
-        </div>
-    </div>
 
-    <!-- MAIN CUSTOMER VIEW -->
-    <div class="container" id="view-customer" style="display: none;">
-        <!-- TRACK MY ORDER BANNER -->
-        <div class="track-banner">
-            <div>
-                <div style="font-size: 14px; font-weight: 800;">Track My Order 📦</div>
-                <div style="font-size: 11px; color: #64748b;">Track your digicam shipping status</div>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search digicam brand..." onkeyup="renderProducts()">
             </div>
-            <button class="btn-track" onclick="openTrackModal()">Track Order</button>
+
+            <div class="filter-pills">
+                <button class="pill active" onclick="setCategory('all', this)">Home</button>
+                <button class="pill" onclick="setCategory('discount', this)">Digicam Discount</button>
+                <button class="pill" onclick="setCategory('ready', this)">Cams ready to buy</button>
+            </div>
+
+            <div class="grid-products" id="product-grid"></div>
         </div>
 
-        <div class="catalog-title">Digicam Store Product Catalog</div>
-        <div class="grid-products" id="customer-products"></div>
-    </div>
+        <!-- TAB DETAIL & REVIEWS -->
+        <div id="tab-detail" style="display:none;">
+            <button onclick="navTo('home')" style="background:none; font-size:12px; font-weight:700; color:#64748b; margin-bottom:10px;">← Back to Catalog</button>
+            <div id="detail-content"></div>
+        </div>
 
-    <!-- MAIN ADMIN VIEW -->
-    <div class="container" id="view-admin" style="display: none;">
-        <div class="admin-layout">
-            <!-- LEFT PANEL: ADD PRODUCT & MANAGE ORDERS -->
-            <div>
-                <div class="admin-panel" style="margin-bottom: 20px;">
-                    <h3 style="font-size: 15px; margin-bottom: 12px; color: #0284c7;">Admin Panel - Add Product</h3>
-                    <form onsubmit="handleAddProduct(event)">
-                        <div class="form-group">
-                            <label>Product Name</label>
-                            <input type="text" id="adm-pname" class="form-control" placeholder="e.g. Sony Cyber-Shot Digicam" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Product Price ($)</label>
-                            <input type="number" id="adm-pprice" class="form-control" placeholder="e.g. 150" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Product Description</label>
-                            <textarea id="adm-pdesc" class="form-control" style="height: 60px;" placeholder="Super Retina Display, CCD Sensor..." required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Upload Photo from Gallery</label>
-                            <input type="file" id="adm-pimg" accept="image/*" class="form-control" style="padding: 6px;">
-                        </div>
-                        <button type="submit" class="btn-auth">Save Product to Catalog</button>
+        <!-- TAB CART & PURCHASE FORM -->
+        <div id="tab-cart" style="display:none;">
+            <div class="card-box" style="margin-top: 14px;">
+                <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 12px;">🛍️ Purchase Form</h3>
+                <form onsubmit="handleCheckout(event)">
+                    <label style="font-size: 11px; font-weight: 700;">Produk Digicam Pilih</label>
+                    <select id="checkout-product" onchange="updateCheckoutPrice()" required></select>
+
+                    <label style="font-size: 11px; font-weight: 700;">Harga ($)</label>
+                    <input type="text" id="checkout-price" readonly style="background: #f1f5f9;">
+
+                    <label style="font-size: 11px; font-weight: 700;">Nama Pembeli</label>
+                    <input type="text" id="checkout-name" placeholder="Masukkan nama lengkap Anda" required>
+
+                    <label style="font-size: 11px; font-weight: 700;">Alamat Pengiriman</label>
+                    <textarea id="checkout-address" placeholder="Alamat lengkap pengiriman..." required style="height: 60px; margin-bottom: 10px;"></textarea>
+
+                    <label style="font-size: 11px; font-weight: 700;">Metode Pembayaran</label>
+                    <select id="checkout-payment" required>
+                        <option value="">-- Pilih Metode Pembayaran --</option>
+                        <option value="Cash On Delivery (COD)">Cash On Delivery (COD)</option>
+                        <option value="E-Wallet (GoPay/ShopeePay/OVO)">E-Wallet (GoPay / ShopeePay / OVO)</option>
+                        <option value="Transfer Bank (BCA/Mandiri)">Transfer Bank (BCA / Mandiri)</option>
+                    </select>
+
+                    <button type="submit" class="btn-primary">Konfirmasi & Buat Pesanan</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- TAB LOGIN / ACCOUNT -->
+        <div id="tab-account" style="display:none;">
+            <div class="card-box" style="margin-top: 20px;">
+                <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                    <button class="pill active" id="btn-mode-user" onclick="switchLoginMode('user')" style="flex:1;">User Login</button>
+                    <button class="pill" id="btn-mode-admin" onclick="switchLoginMode('admin')" style="flex:1;">Admin Login</button>
+                </div>
+
+                <div id="login-form-box">
+                    <h3 id="login-title" style="font-size: 16px; font-weight: 800; margin-bottom: 12px;">Login Customer</h3>
+                    <form onsubmit="handleLogin(event)">
+                        <input type="text" id="login-username" placeholder="Username" required>
+                        <input type="password" id="login-password" placeholder="Password" required>
+                        <button type="submit" class="btn-primary">Enter Dashboard</button>
                     </form>
                 </div>
 
-                <div class="admin-panel">
-                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                        <h3 style="font-size: 15px;">Manage Order Status</h3>
-                        <span class="badge-new" id="order-badge">0 New</span>
-                    </div>
+                <div id="logged-info" style="display:none; text-align:center;">
+                    <p style="font-size: 13px; font-weight: 700; margin-bottom: 10px;" id="welcome-msg"></p>
+                    <button onclick="logout()" class="btn-danger">Logout</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB ADMIN DASHBOARD -->
+        <div id="tab-admin" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin: 12px 0;">
+                <h2 style="font-size: 18px; font-weight: 800;">Admin Panel</h2>
+                <button onclick="logout()" style="color: #ef4444; font-size: 11px; font-weight: 700; background: none;">Logout</button>
+            </div>
+
+            <!-- ADMIN MENU NAVIGATION -->
+            <div class="admin-nav">
+                <button class="admin-nav-btn active" onclick="switchAdminSection('input', this)">Input Barang</button>
+                <button class="admin-nav-btn" onclick="switchAdminSection('pembelian', this)">Lihat Pembelian</button>
+                <button class="admin-nav-btn" onclick="switchAdminSection('harga', this)">View Harga Barang</button>
+                <button class="admin-nav-btn" onclick="switchAdminSection('supplier', this)">Supplier</button>
+            </div>
+
+            <!-- SECTION: INPUT BARANG -->
+            <div id="adm-sec-input" class="card-box">
+                <h4 style="font-size:13px; font-weight:800; margin-bottom:10px;">Tambah Produk Baru</h4>
+                <form onsubmit="handleAdminAddProduct(event)">
+                    <input type="text" id="adm-pname" placeholder="Nama Produk (Contoh: Digicam Canon IXY)" required>
+                    <input type="number" id="adm-pprice" placeholder="Harga ($)" required>
+                    <textarea id="adm-pdesc" placeholder="Deskripsi produk..." required style="height:60px; margin-bottom:10px;"></textarea>
+                    
+                    <label style="font-size: 11px; font-weight: 700;">Upload Foto dari Galeri:</label>
+                    <input type="file" id="adm-pfile" accept="image/*" onchange="previewImageFile(event)" required style="margin-top:4px;">
+                    
+                    <button type="submit" class="btn-primary" style="margin-top:6px;">Tambah Produk</button>
+                </form>
+            </div>
+
+            <!-- SECTION: LIHAT PEMBELIAN & STATUS PESANAN -->
+            <div id="adm-sec-pembelian" class="card-box" style="display:none;">
+                <h4 style="font-size:13px; font-weight:800; margin-bottom:10px;">Kelola Pesanan & Status</h4>
+                <div style="overflow-x:auto;">
                     <table>
                         <thead>
                             <tr>
-                                <th>Buyer</th>
-                                <th>Product</th>
-                                <th>Current Status</th>
-                                <th>Admin Action</th>
+                                <th>Pembeli</th>
+                                <th>Produk</th>
+                                <th>Status</th>
+                                <th>Aksi Perbarui Status</th>
                             </tr>
                         </thead>
-                        <tbody id="admin-orders-table"></tbody>
+                        <tbody id="table-orders-body"></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- RIGHT PANEL: ADMIN CATALOG (EDIT / DELETE) -->
-            <div class="admin-panel">
-                <h3 style="font-size: 15px; margin-bottom: 12px; color: #0284c7;">Store Product Catalog</h3>
-                <div id="admin-products-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- MODAL: REVIEWS LIST -->
-    <div class="modal-overlay" id="modal-reviews">
-        <div class="modal-card">
-            <span class="modal-close" onclick="closeModal('modal-reviews')">&times;</span>
-            <h3 style="font-size: 16px; margin-bottom: 14px;" id="review-modal-title">Customer Reviews</h3>
-            <div id="reviews-container"></div>
-        </div>
-    </div>
-
-    <!-- MODAL: PURCHASE FORM -->
-    <div class="modal-overlay" id="modal-purchase">
-        <div class="modal-card">
-            <span class="modal-close" onclick="closeModal('modal-purchase')">&times;</span>
-            <h3 style="font-size: 16px; margin-bottom: 14px;">Purchase Form</h3>
-            
-            <div class="selected-prod-box">
-                <div style="font-size: 11px; color: #64748b;">Selected Product:</div>
-                <div style="font-size: 14px; font-weight: 700;" id="buy-prod-name">-</div>
-                <div style="font-size: 13px; font-weight: 700; color: #0284c7;" id="buy-prod-price">$0</div>
+            <!-- SECTION: VIEW HARGA & EDIT/DELETE -->
+            <div id="adm-sec-harga" class="card-box" style="display:none;">
+                <h4 style="font-size:13px; font-weight:800; margin-bottom:10px;">Daftar & Edit Produk</h4>
+                <div style="overflow-x:auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produk</th>
+                                <th>Harga</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-price-body"></tbody>
+                    </table>
+                </div>
             </div>
 
-            <form onsubmit="handleCheckout(event)">
-                <div class="form-group">
-                    <label>Buyer Name</label>
-                    <input type="text" id="buy-cust-name" class="form-control" placeholder="Enter your full name" required>
-                </div>
-                <div class="form-group">
-                    <label>Shipping Address</label>
-                    <textarea id="buy-cust-address" class="form-control" style="height: 50px;" placeholder="Enter complete shipping address" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label>Payment Method</label>
-                    <select id="buy-payment-method" class="form-control" required>
-                        <option value="">-- Select Method --</option>
-                        <option value="Bank Transfer (BCA / Mandiri)">Bank Transfer (BCA / Mandiri)</option>
-                        <option value="E-Wallet (Gopay / ShopeePay / OVO)">E-Wallet (Gopay / ShopeePay / OVO)</option>
-                        <option value="Cash on Delivery (COD)">Cash on Delivery (COD)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Payment Subtotal</label>
-                    <input type="text" id="buy-subtotal" class="form-control" readonly style="color: #0284c7; font-weight: 700;">
-                </div>
-                <button type="submit" class="btn-auth" style="background: #16a34a;">Buy Now</button>
-            </form>
+            <!-- SECTION: SUPPLIER -->
+            <div id="adm-sec-supplier" class="card-box" style="display:none;">
+                <h4 style="font-size:13px; font-weight:800; margin-bottom:10px;">Data Supplier Digicam</h4>
+                <p style="font-size:12px; color:#64748b;">• Supplier VintageCam Tokyo Co. (Japan Export)</p>
+                <p style="font-size:12px; color:#64748b;">• Digicam Supply Store Indo (Semarang Depot)</p>
+            </div>
         </div>
+
     </div>
 
-    <!-- MODAL: TRACK MY ORDER -->
-    <div class="modal-overlay" id="modal-track">
-        <div class="modal-card">
-            <span class="modal-close" onclick="closeModal('modal-track')">&times;</span>
-            <h3 style="font-size: 16px; margin-bottom: 14px;">Track My Order 📦</h3>
-            <div id="track-content"></div>
+    <!-- BOTTOM NAV -->
+    <div class="bottom-nav">
+        <div class="nav-item active" id="nav-home" onclick="navTo('home')">
+            <span style="font-size: 18px;">🏠</span>
+            <span>Home</span>
+        </div>
+        <div class="nav-item" id="nav-cart" onclick="navTo('cart')">
+            <span style="font-size: 18px;">🛒</span>
+            <span>Cart/Buy</span>
+        </div>
+        <div class="nav-item" id="nav-account" onclick="navTo('account')">
+            <span style="font-size: 18px;">👤</span>
+            <span>Account</span>
         </div>
     </div>
 
     <script>
-        // INITIAL DATA WITH DETAILED ATTRIBUTES & REVIEWS (ID 1-5)
-        const defaultProducts = [
-            {
-                id: 1,
-                name: "Canon IXY Digital 930 IS",
-                price: 185,
-                oldPrice: 220,
-                discount: "15% OFF",
-                rating: "4.9",
-                category: "ready",
-                stock: 8,
-                img: "digicam1.jpg",
-                desc: "Classic compact digicam with rich color science. Perfect for vintage aesthetic film-like photography.",
-                reviews: [
-                    {
-                        username: "cherries",
-                        avatar: "cherries.jpg",
-                        text: "such a beautiful cam... aaa I didn't expect the digicam output to be this good! retro vibe totally nailed! ✨"
-                    },
-                    {
-                        username: "Arven Thoories",
-                        avatar: "Arven.jpg",
-                        text: "I think all the Digicams here are great. High technical fidelity and crisp output for a vintage model. Much obliged."
-                    },
-                    {
-                        username: "cacichu",
-                        avatar: "cacichu.jpg",
-                        text: "OMG it's super cute!! The body design is so tiny and aesthetic, fits right in my mini bag! <3"
-                    }
-                ]
-            },
-            {
-                id: 2,
-                name: "Sony Cyber-shot DSC-W350",
-                price: 140,
-                oldPrice: 175,
-                discount: "20% OFF",
-                rating: "4.8",
-                category: "discount",
-                stock: 5,
-                img: "digicam2.jpg",
-                desc: "Ultra-slim CCD sensor digicam known for soft skin tones and iconic early 2000s flash photo aesthetics.",
-                reviews: [
-                    {
-                        username: "Anderson.",
-                        avatar: "anderson.jpg",
-                        text: "Clean sharpness, surprisingly deep color rendering. A solid addition to my kit."
-                    },
-                    {
-                        username: "Isaiah Journey",
-                        avatar: "isaiah.jpg",
-                        text: "The night flash pictures look so moody and cool!! Love it sm, much gracias!"
-                    },
-                    {
-                        username: "George Soujhr",
-                        avatar: "george.jpg",
-                        text: "I bought this cams for my girlfriend, didn't expect she's so like it. Fast delivery, camera arrived in pristine mint condition. Operates smoothly, thankyou FindYourCam."
-                    }
-                ]
-            },
-            {
-                id: 3,
-                name: "Fujifilm FinePix Z33WP Pink",
-                price: 165,
-                oldPrice: 190,
-                discount: "12% OFF",
-                rating: "5.0",
-                category: "promo",
-                stock: 3,
-                img: "digicam3.jpg",
-                desc: "Vibrant pink waterproof digicam. Extremely rare aesthetic body with punchy contrast tones.",
-                reviews: [
-                    {
-                        username: "maureen vseih",
-                        avatar: "maureen.jpg",
-                        text: "PINK PINK PINK! Absolute perfection! I'm screaming because of how adorable this camera is!"
-                    },
-                    {
-                        username: "belleyourfavorite",
-                        avatar: "belle.jpg",
-                        text: "The tone is naturally warm and dreamy! No editing needed at all!"
-                    },
-                    {
-                        username: "Parker",
-                        avatar: "zeon.jpg",
-                        text: "Surprisingly rugged build despite the bright aesthetic color scheme. Excellent shutter response."
-                    }
-                ]
-            },
-            {
-                id: 4,
-                name: "Nikon Coolpix S210",
-                price: 130,
-                oldPrice: 150,
-                discount: "10% OFF",
-                rating: "4.7",
-                category: "ready",
-                stock: 10,
-                img: "digicam4.jpg",
-                desc: "Sleek metallic finish digicam with quick focus and nostalgic low-light noise grain.",
-                reviews: [
-                    {
-                        username: "Soren",
-                        avatar: "soren.jpg",
-                        text: "Reliable ergonomics. Compact enough for daily pocket carry without sacrificing optical clarity."
-                    },
-                    {
-                        username: "Velix 4sho",
-                        avatar: "velix.jpg",
-                        text: "Great vintage look. Really good value for money."
-                    },
-                    {
-                        username: "mills",
-                        avatar: "cami.jpg",
-                        text: "Gives that iconic Y2K celebrity photo look! obsessed!"
-                    }
-                ]
-            },
-            {
-                id: 5,
-                name: "Olympus Camedia FE-230",
-                price: 110,
-                oldPrice: 140,
-                discount: "25% OFF",
-                rating: "4.6",
-                category: "discount",
-                stock: 4,
-                img: "digicam5.jpg",
-                desc: "Lightweight vintage CCD camera with crisp lens for warm outdoor portrait shots.",
-                reviews: [
-                    {
-                        username: "zeell",
-                        avatar: "zella.jpg",
-                        text: "Took this to concert and results were immaculate! 1000/10!"
-                    },
-                    {
-                        username: "KAAALILAAAA",
-                        avatar: "kalila.jpg",
-                        text: "Solid construction, dynamic range is remarkable for its era."
-                    },
-                    {
-                        username: "kimi22",
-                        avatar: "kimi.jpg",
-                        text: "Super cute and easy to use! Buttons are smooth!"
-                    }
-                ]
-            }
+        // DATA INITIAL
+        let products = JSON.parse(localStorage.getItem('fyc_products')) || [
+            { id: 1, name: "Canon IXY Digital 930 IS", price: 185, desc: "Classic compact digicam with rich color science.", category: "ready", img: "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500" },
+            { id: 2, name: "Sony Cyber-shot DSC-W350", price: 140, desc: "Ultra-slim CCD sensor digicam known for early 2000s flash aesthetics.", category: "discount", img: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500" }
         ];
 
-        let products = JSON.parse(localStorage.getItem('cam_products')) || defaultProducts;
-        let orders = JSON.parse(localStorage.getItem('cam_orders')) || [];
-        let currentRole = 'customer';
-        let loggedUser = '';
-        let activeProductForBuy = null;
+        let orders = JSON.parse(localStorage.getItem('fyc_orders')) || [
+            { buyerName: "Cherries", product: "Canon IXY Digital 930 IS", status: "Order is being packed" }
+        ];
+
+        let currentUser = JSON.parse(localStorage.getItem('fyc_session')) || null;
+        let selectedCategory = 'all';
+        let tempBase64Img = "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500";
 
         function saveData() {
-            localStorage.setItem('cam_products', JSON.stringify(products));
-            localStorage.setItem('cam_orders', JSON.stringify(orders));
+            localStorage.setItem('fyc_products', JSON.stringify(products));
+            localStorage.setItem('fyc_orders', JSON.stringify(orders));
         }
 
-        function formatPrice(num) {
-            return '$' + Number(num).toLocaleString('en-US');
-        }
+        /* NAVIGATION */
+        function navTo(tab) {
+            ['home', 'detail', 'cart', 'account', 'admin'].forEach(t => {
+                document.getElementById('tab-' + t).style.display = 'none';
+            });
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
 
-        /* AUTH LOGIC */
-        function switchAuthTab(role) {
-            currentRole = role;
-            document.getElementById('tab-cust').classList.toggle('active', role === 'customer');
-            document.getElementById('tab-admin').classList.toggle('active', role === 'admin');
-            
-            if(role === 'customer') {
-                document.getElementById('lbl-input-user').innerText = 'User Username';
-                document.getElementById('auth-username').placeholder = 'Enter username';
-                document.getElementById('lbl-input-pass').innerText = 'Password';
-                document.getElementById('auth-password').placeholder = 'Enter password';
-                document.getElementById('btn-submit-auth').innerText = 'Log in as User';
-            } else {
-                document.getElementById('lbl-input-user').innerText = 'Admin Username';
-                document.getElementById('auth-username').placeholder = 'Enter admin username';
-                document.getElementById('lbl-input-pass').innerText = 'Admin Password';
-                document.getElementById('auth-password').placeholder = 'Enter admin password';
-                document.getElementById('btn-submit-auth').innerText = 'Log in to Admin Panel';
+            if (tab === 'home') {
+                document.getElementById('tab-home').style.display = 'block';
+                document.getElementById('nav-home').classList.add('active');
+                renderProducts();
+            } else if (tab === 'cart') {
+                document.getElementById('tab-cart').style.display = 'block';
+                document.getElementById('nav-cart').classList.add('active');
+                populateCheckoutForm();
+            } else if (tab === 'account') {
+                document.getElementById('tab-account').style.display = 'block';
+                document.getElementById('nav-account').classList.add('active');
+                checkSession();
+            } else if (tab === 'admin') {
+                if (currentUser && currentUser.role === 'admin') {
+                    document.getElementById('tab-admin').style.display = 'block';
+                    document.getElementById('nav-account').classList.add('active');
+                    renderAdminOrders();
+                    renderAdminPrices();
+                } else {
+                    alert('Akses khusus Admin! Silakan login sebagai Admin terlebih dahulu.');
+                    navTo('account');
+                }
             }
         }
 
-        function handleAuth(e) {
-            e.preventDefault();
-            loggedUser = document.getElementById('auth-username').value;
-            document.getElementById('lbl-username').innerText = (currentRole === 'admin' ? 'Admin: ' : '') + loggedUser;
-            document.getElementById('auth-overlay').style.display = 'none';
+        /* HOME & CATALOG */
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
 
-            if(currentRole === 'admin') {
-                document.getElementById('view-customer').style.display = 'none';
-                document.getElementById('view-admin').style.display = 'block';
-                renderAdminView();
-            } else {
-                document.getElementById('view-admin').style.display = 'none';
-                document.getElementById('view-customer').style.display = 'block';
-                renderCustomerProducts();
-            }
-        }
+            const filtered = products.filter(p => {
+                const matchCat = selectedCategory === 'all' || p.category === selectedCategory;
+                const matchSearch = p.name.toLowerCase().includes(searchVal);
+                return matchCat && matchSearch;
+            });
 
-        function logout() {
-            document.getElementById('auth-username').value = '';
-            document.getElementById('auth-password').value = '';
-            document.getElementById('auth-overlay').style.display = 'flex';
-        }
-
-        /* CUSTOMER RENDER & REVIEWS */
-        function renderCustomerProducts() {
-            const container = document.getElementById('customer-products');
-            container.innerHTML = products.map(p => `
-                <div class="card-product">
-                    <div style="position: relative;">
-                        ${p.discount ? `<span style="position: absolute; top: 8px; left: 8px; background: #ef4444; color: white; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 4px; z-index: 2;">${p.discount}</span>` : ''}
-                        <img src="${p.img}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400'">
-                        <div class="product-name">${p.name}</div>
-                        <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; margin-bottom: 6px;">
-                            <span style="color: #f59e0b; font-weight: 700;">★ ${p.rating || '5.0'}</span>
-                            <span style="color: #0284c7; font-size: 11px; font-weight: 600; cursor: pointer; text-decoration: underline;" onclick="openReviewsModal(${p.id})">
-                                (${p.reviews ? p.reviews.length : 0} reviews)
-                            </span>
-                        </div>
-                        <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
-                            <span class="product-price">${formatPrice(p.price)}</span>
-                            ${p.oldPrice ? `<span style="font-size: 11px; color: #94a3b8; text-decoration: line-through;">${formatPrice(p.oldPrice)}</span>` : ''}
-                        </div>
-                        <div style="font-size: 11px; color: #16a34a; font-weight: 700; margin-bottom: 6px;">Stock: ${p.stock || 0} units left</div>
-                        <div class="product-desc">${p.desc}</div>
+            grid.innerHTML = filtered.map(p => `
+                <div class="card-product" onclick="openDetail(${p.id})">
+                    <img src="${p.img}" class="product-img">
+                    <div>
+                        <div style="font-size:12px; font-weight:700; margin-bottom:4px;">${p.name}</div>
+                        <div style="font-size:13px; font-weight:800; color:#0f172a;">$${p.price}</div>
                     </div>
-                    <button class="btn-buy-card" onclick="openPurchaseModal(${p.id})">Add to Cart / Buy</button>
+                    <button class="btn-primary" style="margin-top:8px; font-size:10px; padding:6px;" onclick="event.stopPropagation(); quickBuy(${p.id})">Buy Now</button>
                 </div>
             `).join('');
         }
 
-        function openReviewsModal(pId) {
-            const p = products.find(x => x.id === pId);
-            document.getElementById('review-modal-title').innerText = `Reviews for ${p.name}`;
-            const container = document.getElementById('reviews-container');
-
-            if(!p.reviews || p.reviews.length === 0) {
-                container.innerHTML = '<p style="font-size:12px; color:#64748b; text-align:center; padding:20px;">No reviews yet for this product.</p>';
-            } else {
-                container.innerHTML = p.reviews.map(r => `
-                    <div class="review-item">
-                        <img src="${r.avatar}" class="review-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(r.username)}&background=0284c7&color=fff'">
-                        <div>
-                            <div class="review-user">${r.username}</div>
-                            <div class="review-text">${r.text}</div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            document.getElementById('modal-reviews').style.display = 'flex';
+        function setCategory(cat, btn) {
+            selectedCategory = cat;
+            document.querySelectorAll('.filter-pills .pill').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderProducts();
         }
 
-        function openPurchaseModal(pId) {
-            activeProductForBuy = products.find(x => x.id === pId);
-            document.getElementById('buy-prod-name').innerText = activeProductForBuy.name;
-            document.getElementById('buy-prod-price').innerText = formatPrice(activeProductForBuy.price);
-            document.getElementById('buy-subtotal').value = formatPrice(activeProductForBuy.price);
-            document.getElementById('buy-cust-name').value = loggedUser;
-            document.getElementById('modal-purchase').style.display = 'flex';
+        function openDetail(pId) {
+            const p = products.find(x => x.id === pId);
+            document.getElementById('tab-home').style.display = 'none';
+            document.getElementById('tab-detail').style.display = 'block';
+
+            document.getElementById('detail-content').innerHTML = `
+                <img src="${p.img}" style="width:100%; height:200px; object-fit:contain; border-radius:12px; margin-bottom:12px;">
+                <h2 style="font-size:18px; font-weight:800;">${p.name}</h2>
+                <div style="font-size:16px; font-weight:800; color:#0f172a; margin:6px 0;">$${p.price}</div>
+                <p style="font-size:12px; color:#64748b; line-height:1.5; margin-bottom:16px;">${p.desc}</p>
+                <button class="btn-primary" onclick="quickBuy(${p.id})">Procceed to Purchase Form</button>
+            `;
+        }
+
+        /* TRACK MY ORDER */
+        function trackOrder() {
+            const query = document.getElementById('track-input').value.trim().toLowerCase();
+            const res = document.getElementById('track-result');
+            if (!query) { res.innerText = "Masukkan nama Anda untuk mencari pesanan."; return; }
+
+            const found = orders.find(o => o.buyerName.toLowerCase().includes(query));
+            if (found) {
+                res.innerText = `Status (${found.product}): ${found.status}`;
+            } else {
+                res.innerText = "Pesanan tidak ditemukan.";
+            }
+        }
+
+        /* PURCHASE FORM / CHECKOUT */
+        function populateCheckoutForm() {
+            const select = document.getElementById('checkout-product');
+            select.innerHTML = products.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+            updateCheckoutPrice();
+        }
+
+        function updateCheckoutPrice() {
+            const pId = document.getElementById('checkout-product').value;
+            const p = products.find(x => x.id == pId);
+            if (p) document.getElementById('checkout-price').value = p.price;
+        }
+
+        function quickBuy(pId) {
+            navTo('cart');
+            document.getElementById('checkout-product').value = pId;
+            updateCheckoutPrice();
         }
 
         function handleCheckout(e) {
             e.preventDefault();
+            const pId = document.getElementById('checkout-product').value;
+            const p = products.find(x => x.id == pId);
+            const buyer = document.getElementById('checkout-name').value;
+
             const newOrder = {
-                id: Date.now(),
-                buyerName: document.getElementById('buy-cust-name').value,
-                productName: activeProductForBuy.name,
-                price: activeProductForBuy.price,
-                address: document.getElementById('buy-cust-address').value,
-                payment: document.getElementById('buy-payment-method').value,
-                status: 'Digicam order processed ⏳'
+                buyerName: buyer,
+                product: p.name,
+                status: "Order is being packed"
             };
+
             orders.unshift(newOrder);
             saveData();
-            closeModal('modal-purchase');
-            alert('Order created successfully! You can track it under "Track My Order".');
+            alert(`Pesanan berhasil dibuat!\nSilakan lacak di menu Track My Order dengan nama: "${buyer}"`);
+            e.target.reset();
+            navTo('home');
         }
 
-        function openTrackModal() {
-            const userOrders = orders.filter(o => o.buyerName.toLowerCase() === loggedUser.toLowerCase());
-            const container = document.getElementById('track-content');
-            
-            if(userOrders.length === 0) {
-                container.innerHTML = '<p style="font-size:12px; color:#64748b; text-align:center; padding:20px;">No active orders found.</p>';
+        /* LOGIN & SESSION */
+        let activeLoginRole = 'user';
+        function switchLoginMode(role) {
+            activeLoginRole = role;
+            document.getElementById('btn-mode-user').classList.toggle('active', role === 'user');
+            document.getElementById('btn-mode-admin').classList.toggle('active', role === 'admin');
+            document.getElementById('login-title').innerText = role === 'admin' ? 'Login Admin' : 'Login Customer';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const u = document.getElementById('login-username').value;
+            const p = document.getElementById('login-password').value;
+
+            if (activeLoginRole === 'admin') {
+                if (u === 'admin' && p === 'admin') {
+                    currentUser = { username: u, role: 'admin' };
+                    localStorage.setItem('fyc_session', JSON.stringify(currentUser));
+                    navTo('admin');
+                } else {
+                    alert('Login Admin Gagal! Username/Password salah.');
+                }
             } else {
-                container.innerHTML = userOrders.map(o => `
-                    <div class="selected-prod-box">
-                        <div style="font-size:14px; font-weight:700;">${o.productName}</div>
-                        <div style="font-size:12px; color:#64748b;">Buyer: ${o.buyerName}</div>
-                        <div style="margin-top:10px; background:#ffffff; padding:8px; border-radius:6px; text-align:center; font-weight:700; color:#0284c7; font-size:13px; border:1px solid #0284c7;">
-                            Status: ${o.status}
-                        </div>
-                    </div>
-                `).join('');
+                currentUser = { username: u, role: 'user' };
+                localStorage.setItem('fyc_session', JSON.stringify(currentUser));
+                checkSession();
+                alert(`Selamat datang, ${u}!`);
             }
-            document.getElementById('modal-track').style.display = 'flex';
         }
 
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+        function checkSession() {
+            if (currentUser) {
+                document.getElementById('login-form-box').style.display = 'none';
+                document.getElementById('logged-info').style.display = 'block';
+                document.getElementById('welcome-msg').innerText = `Logged in as: ${currentUser.username} (${currentUser.role.toUpperCase()})`;
+                if(currentUser.role === 'admin') {
+                    document.getElementById('welcome-msg').innerHTML += `<br><button onclick="navTo('admin')" class="btn-primary" style="margin-top:10px;">Buka Admin Dashboard</button>`;
+                }
+            } else {
+                document.getElementById('login-form-box').style.display = 'block';
+                document.getElementById('logged-info').style.display = 'none';
+            }
+        }
 
-        /* ADMIN FUNCTIONS */
-        function renderAdminView() {
-            // Render Orders Table
-            document.getElementById('order-badge').innerText = `${orders.length} New`;
-            const orderTbody = document.getElementById('admin-orders-table');
-            orderTbody.innerHTML = orders.map(o => `
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('fyc_session');
+            navTo('account');
+        }
+
+        /* ADMIN DASHBOARD FUNCTIONS */
+        function switchAdminSection(sec, btn) {
+            ['input', 'pembelian', 'harga', 'supplier'].forEach(s => {
+                document.getElementById('adm-sec-' + s).style.display = 'none';
+            });
+            document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('adm-sec-' + sec).style.display = 'block';
+        }
+
+        function previewImageFile(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(evt) { tempBase64Img = evt.target.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function handleAdminAddProduct(e) {
+            e.preventDefault();
+            const newP = {
+                id: Date.now(),
+                name: document.getElementById('adm-pname').value,
+                price: Number(document.getElementById('adm-pprice').value),
+                desc: document.getElementById('adm-pdesc').value,
+                category: "ready",
+                img: tempBase64Img
+            };
+            products.unshift(newP);
+            saveData();
+            alert('Produk berhasil ditambahkan!');
+            e.target.reset();
+            renderAdminPrices();
+        }
+
+        function renderAdminOrders() {
+            const tbody = document.getElementById('table-orders-body');
+            tbody.innerHTML = orders.map((o, idx) => `
                 <tr>
-                    <td><b>${o.buyerName}</b></td>
-                    <td>${o.productName}</td>
-                    <td style="color:#0284c7; font-weight:700;">${o.status}</td>
-                    <td><button class="btn-update" onclick="updateOrderStatus(${o.id})">Update Status</button></td>
+                    <td style="font-weight:700;">${o.buyerName}</td>
+                    <td>${o.product}</td>
+                    <td><span style="color:#0284c7; font-weight:700;">${o.status}</span></td>
+                    <td>
+                        <button class="btn-warning" onclick="updateOrderStatus(${idx})">Perbarui Status</button>
+                    </td>
                 </tr>
             `).join('');
+        }
 
-            // Render Products List in Admin
-            const prodContainer = document.getElementById('admin-products-list');
-            prodContainer.innerHTML = products.map(p => `
-                <div style="background:#f8fafc; padding:12px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px;">
-                    <img src="${p.img}" style="width:100%; height:120px; object-fit:cover; border-radius:6px; margin-bottom:8px;" onerror="this.src='https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400'">
-                    <div style="font-size:13px; font-weight:700;">${p.name}</div>
-                    <div style="font-size:12px; color:#0284c7; font-weight:700; margin-bottom:4px;">${formatPrice(p.price)}</div>
-                    <div style="font-size:11px; color:#64748b; margin-bottom:8px;">${p.desc}</div>
-                    <div style="display:flex; justify-content:space-between;">
-                        <button class="btn-edit" onclick="editProduct(${p.id})">Edit</button>
-                        <button class="btn-delete" onclick="deleteProduct(${p.id})">Delete</button>
-                    </div>
-                </div>
+        function updateOrderStatus(idx) {
+            const choice = prompt(`Select status update for ${orders[idx].buyerName}:\n1. Order is being packed\n2. Order delivered\n3. Order completed\n(Type the number 1, 2, or 3)`);
+            if (choice === '1') orders[idx].status = "Order is being packed";
+            else if (choice === '2') orders[idx].status = "Order delivered";
+            else if (choice === '3') orders[idx].status = "Order completed";
+            else if (choice !== null) { alert('Pilihan salah!'); return; }
+            
+            saveData();
+            renderAdminOrders();
+        }
+
+        function renderAdminPrices() {
+            const tbody = document.getElementById('table-price-body');
+            tbody.innerHTML = products.map(p => `
+                <tr>
+                    <td style="font-weight:700;">${p.name}</td>
+                    <td>$${p.price}</td>
+                    <td>
+                        <button class="btn-warning" onclick="editProductPrompt(${p.id})">Edit</button>
+                        <button class="btn-danger" onclick="deleteProduct(${p.id})">Hapus</button>
+                    </td>
+                </tr>
             `).join('');
         }
 
-        function updateOrderStatus(orderId) {
-            const ord = orders.find(o => o.id === orderId);
-            const input = prompt(
-                `Select latest status for order from "${ord.buyerName}":\n` +
-                `1. Order is being packed 📦\n` +
-                `2. Order delivered 🚚\n` +
-                `3. Order completed ✅\n\n` +
-                `Type the numbers 1, 2, or 3:`
-            );
-
-            if(input === '1') ord.status = "Order is being packed 📦";
-            else if(input === '2') ord.status = "Order delivered 🚚";
-            else if(input === '3') ord.status = "Order completed ✅";
-            else return;
-
-            saveData();
-            renderAdminView();
-        }
-
-        function handleAddProduct(e) {
-            e.preventDefault();
-            const fileInput = document.getElementById('adm-pimg');
-            let imgSrc = "digicam1.jpg";
-
-            const createObj = (img) => {
-                products.unshift({
-                    id: Date.now(),
-                    name: document.getElementById('adm-pname').value,
-                    price: Number(document.getElementById('adm-pprice').value),
-                    rating: "5.0",
-                    stock: 5,
-                    desc: document.getElementById('adm-pdesc').value,
-                    img: img,
-                    reviews: []
-                });
-                saveData();
-                renderAdminView();
-                e.target.reset();
-                alert('Product added to catalog successfully!');
-            };
-
-            if(fileInput.files && fileInput.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function(evt) { createObj(evt.target.result); };
-                reader.readAsDataURL(fileInput.files[0]);
-            } else {
-                createObj(imgSrc);
-            }
-        }
-
-        function editProduct(pId) {
+        function editProductPrompt(pId) {
             const p = products.find(x => x.id === pId);
-            const choice = prompt(
-                `Select the data you want to change:\n` +
-                `1. change product name\n` +
-                `2. change product price\n` +
-                `3. change product description\n\n` +
-                `type the numbers 1, 2 or 3:`
-            );
+            const choice = prompt(`Select the data you want to change for ${p.name}:\n1. Change product name\n2. Change product price\n3. Change product description\n(Type the numbers 1, 2 or 3)`);
 
-            if(choice === '1') {
-                const val = prompt('Enter New Product Name:', p.name);
-                if(val) p.name = val;
-            } else if(choice === '2') {
-                const val = prompt('Enter New Product Price ($):', p.price);
-                if(val) p.price = Number(val);
-            } else if(choice === '3') {
-                const val = prompt('Enter New Product Description:', p.desc);
-                if(val) p.desc = val;
-            } else {
+            if (choice === '1') {
+                const newVal = prompt("Enter new product name:", p.name);
+                if (newVal) p.name = newVal;
+            } else if (choice === '2') {
+                const newVal = prompt("Enter new price ($):", p.price);
+                if (newVal) p.price = Number(newVal);
+            } else if (choice === '3') {
+                const newVal = prompt("Enter new description:", p.desc);
+                if (newVal) p.desc = newVal;
+            } else if (choice !== null) {
+                alert('Pilihan salah!');
                 return;
             }
 
             saveData();
-            renderAdminView();
-            alert('Product data updated successfully!');
+            renderAdminPrices();
+            renderProducts();
         }
 
         function deleteProduct(pId) {
-            if(confirm('Are you sure you want to delete this product from the catalog?')) {
-                products = products.filter(p => p.id !== pId);
+            if (confirm('Hapus produk ini?')) {
+                products = products.filter(x => x.id !== pId);
                 saveData();
-                renderAdminView();
+                renderAdminPrices();
+                renderProducts();
             }
         }
+
+        // INIT APP
+        saveData();
+        renderProducts();
     </script>
 </body>
 </html>
